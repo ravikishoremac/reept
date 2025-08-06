@@ -96,39 +96,71 @@ public class GoogleSheetServiceUtil {
 //        ).setApplicationName("Task Manager App").build();
 //    }
 //    
+
+
 	
-	public static Sheets getSheetsService(String credentialsFileName) throws IOException, GeneralSecurityException {
-	    InputStream credentialsStream = GoogleSheetServiceUtil.class
-	            .getClassLoader()
-	            .getResourceAsStream(credentialsFileName);
+	// public static Sheets getSheetsService(String credentialsFileName) throws IOException, GeneralSecurityException {
+	//     InputStream credentialsStream = GoogleSheetServiceUtil.class
+	//             .getClassLoader()
+	//             .getResourceAsStream(credentialsFileName);
 
-	    if (credentialsStream == null) {
-	        throw new FileNotFoundException("Credentials file not found in classpath: " + credentialsFileName);
-	    }
+	//     if (credentialsStream == null) {
+	//         throw new FileNotFoundException("Credentials file not found in classpath: " + credentialsFileName);
+	//     }
 
+
+
+		
 //	    GoogleCredentials credentials = GoogleCredentials
 //	            .fromStream(credentialsStream)
 //	            .createScoped(List.of(SheetsScopes.SPREADSHEETS));
+
+	
 	    
 	    // for tomcat 8.5
-	    GoogleCredentials credentials = GoogleCredentials
-	            .fromStream(credentialsStream)
-	            .createScoped(Arrays.asList(SheetsScopes.SPREADSHEETS));
+	//     GoogleCredentials credentials = GoogleCredentials
+	//             .fromStream(credentialsStream)
+	//             .createScoped(Arrays.asList(SheetsScopes.SPREADSHEETS));
 
-	    HttpCredentialsAdapter baseInitializer = new HttpCredentialsAdapter(credentials);
+		
 
-	    HttpRequestInitializer timeoutInitializer = request -> {
-	        baseInitializer.initialize(request);
-	        request.setConnectTimeout(60000);
-	        request.setReadTimeout(60000);
-	    };
+	//     HttpCredentialsAdapter baseInitializer = new HttpCredentialsAdapter(credentials);
 
-	    return new Sheets.Builder(
-	            GoogleNetHttpTransport.newTrustedTransport(),
-	            JacksonFactory.getDefaultInstance(),
-	            timeoutInitializer
-	    ).setApplicationName("Task Manager App").build();
-	}
+	//     HttpRequestInitializer timeoutInitializer = request -> {
+	//         baseInitializer.initialize(request);
+	//         request.setConnectTimeout(60000);
+	//         request.setReadTimeout(60000);
+	//     };
+
+	//     return new Sheets.Builder(
+	//             GoogleNetHttpTransport.newTrustedTransport(),
+	//             JacksonFactory.getDefaultInstance(),
+	//             timeoutInitializer
+	//     ).setApplicationName("Task Manager App").build();
+	// }
+
+	public static Sheets getSheetsService(String credentialsFilePath) throws IOException, GeneralSecurityException {
+    // Load directly from filesystem path (e.g. /etc/secrets/credentialsFirst.json)
+    InputStream credentialsStream = new FileInputStream(credentialsFilePath);
+
+    GoogleCredentials credentials = GoogleCredentials
+            .fromStream(credentialsStream)
+            .createScoped(List.of(SheetsScopes.SPREADSHEETS));
+
+    HttpCredentialsAdapter baseInitializer = new HttpCredentialsAdapter(credentials);
+
+    HttpRequestInitializer timeoutInitializer = request -> {
+        baseInitializer.initialize(request);
+        request.setConnectTimeout(60000);
+        request.setReadTimeout(60000);
+    };
+
+    return new Sheets.Builder(
+            GoogleNetHttpTransport.newTrustedTransport(),
+            JacksonFactory.getDefaultInstance(),
+            timeoutInitializer
+    ).setApplicationName("Task Manager App").build();
+}
 
 }
 
