@@ -85,50 +85,50 @@ public class EmployeeServiceImpl implements EmployeeService {
 //		}
 //		
 	
-		// @Override
-		// public String update(Long id, Task updatedTask) {
-		//     Optional<Task> existingTask = googleSheetsRepository.findById(id);
+		 @Override
+		public String update(Long id, Task updatedTask) {
+		     Optional<Task> existingTask = googleSheetsRepository.findById(id);
 
-		//     if (!existingTask.isPresent()) {
-		//         return "Task with ID: " + id + " not found";
-		//     }
+		if (!existingTask.isPresent()) {
+		         return "Task with ID: " + id + " not found";
+		     }
 
-		//     boolean isUpdated = googleSheetsRepository.updateById(id, updatedTask);
+		     boolean isUpdated = googleSheetsRepository.updateById(id, updatedTask);
 
-		//     if (isUpdated && "Completion Request".equalsIgnoreCase(updatedTask.getStatus())) {
-		//         String personEmail = updatedTask.getPerson(); // employee email
-		//         User employee = googleSheetsRepository.userByemail(personEmail); // fetch user
+		     if (isUpdated && "Completion Request".equalsIgnoreCase(updatedTask.getStatus())) {
+		         String personEmail = updatedTask.getPerson(); // employee email
+		         User employee = googleSheetsRepository.userByemail(personEmail); // fetch user
 
-		//         if (employee != null) {
-		//             String employeeName = employee.getName();
-		//             String managerEmail = employee.getReportingto(); // dynamically get manager email
+		         if (employee != null) {
+		            String employeeName = employee.getName();
+		             String managerEmail = employee.getReportingto(); // dynamically get manager email
 
-		//             if (managerEmail != null && !managerEmail.isEmpty()) {
-		//                 String subject = "Task Updated by " + employeeName;
+		             if (managerEmail != null && !managerEmail.isEmpty()) {
+		                 String subject = "Task Updated by " + employeeName;
 
-		//                 String body = "<p>Dear Manager,</p>"
-		//                         + "<p>The following task has been updated by <span style='color:blue; font-weight: bold;'>" + updatedTask.getPerson() + "</span>. Please review the details below:</p>"
-		//                         + "<ul>"
-		//                         + "<li><strong>Task ID</strong>: " + updatedTask.getId() + "</li>"
-		//                         + "<li><strong>Task Name</strong>: " + updatedTask.getDescription() + "</li>"
-		//                         + "<li><strong>Department</strong>: " + updatedTask.getDepartment() + "</li>"
-		//                         + "<li><strong>Priority</strong>: " + updatedTask.getPriority() + "</li>"
-		//                         + "<li><strong>Start Date</strong>: " + updatedTask.getStart_date() + "</li>"
-		//                         + "<li><strong>End Date</strong>: " + updatedTask.getEnd_date() + "</li>"
-		//                         + "<li><strong>Request Date</strong>: " + updatedTask.getRequest_date() + "</li>"
-		//                         + "<li><strong>Status</strong>: " + updatedTask.getStatus().toUpperCase() + "</li>"
-		//                         + "</ul>"
-		//                         + "<p>Please login to your dashboard to review the task.</p>"
-		//                         + "<p>Best regards,<br>Task Management System.</p>"
-		//                         + "<p><i>Note: This is a system-generated message. Please do not reply.</i></p>";
+		                 String body = "<p>Dear Manager,</p>"
+		                         + "<p>The following task has been updated by <span style='color:blue; font-weight: bold;'>" + updatedTask.getPerson() + "</span>. Please review the details below:</p>"
+		                         + "<ul>"
+		                         + "<li><strong>Task ID</strong>: " + updatedTask.getId() + "</li>"
+		                         + "<li><strong>Task Name</strong>: " + updatedTask.getDescription() + "</li>"
+		                         + "<li><strong>Department</strong>: " + updatedTask.getDepartment() + "</li>"
+		                         + "<li><strong>Priority</strong>: " + updatedTask.getPriority() + "</li>"
+		                         + "<li><strong>Start Date</strong>: " + updatedTask.getStart_date() + "</li>"
+		                         + "<li><strong>End Date</strong>: " + updatedTask.getEnd_date() + "</li>"
+		                         + "<li><strong>Request Date</strong>: " + updatedTask.getRequest_date() + "</li>"
+		                         + "<li><strong>Status</strong>: " + updatedTask.getStatus().toUpperCase() + "</li>"
+		                         + "</ul>"
+		                         + "<p>Please login to your dashboard to review the task.</p>"
+		                         + "<p>Best regards,<br>Task Management System.</p>"
+		                         + "<p><i>Note: This is a system-generated message. Please do not reply.</i></p>";
 
-		//                 emailService.sendEmail(managerEmail, subject, body);
-		//             }
-		//         }
-		//     }
+		                 emailService.sendEmail(managerEmail, subject, body);
+		             }
+		         }
+		     }
 
-		//     return isUpdated ? "Task updated successfully." : "Failed to update task.";
-		// }
+		     return isUpdated ? "Task updated successfully." : "Failed to update task.";
+		 }
 
 		
 	//-----------Dynamically fetch manager Email --------------------
