@@ -1,13 +1,14 @@
-# -------- Stage 1: Build the WAR using Maven --------
+# ---------- Build stage ----------
 FROM maven:3.9.6-eclipse-temurin-17 AS builder
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
 
-# -------- Stage 2: Run the WAR on Tomcat --------
-FROM tomcat:10.1.23-jdk17-temurin
-RUN rm -rf /usr/local/tomcat/webapps/ROOT
-COPY --from=builder /app/target/ROOT.war /usr/local/tomcat/webapps/ROOT.war
+# ---------- Runtime stage ----------
+FROM eclipse-temurin:17-jre
+WORKDIR /app
+COPY --from=builder /app/target/reept-0.0.1-SNAPSHOT.jar /app/app.jar
 
 EXPOSE 8080
-CMD ["catalina.sh", "run"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
