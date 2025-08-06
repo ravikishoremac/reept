@@ -7,11 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ViewController {
 
-	@GetMapping("/")
-public String index() {
-    return "redirect:/login.html";
-}
-
 	
 	@GetMapping("/ept/home/manager")
 	  public String forwardManager() {
@@ -23,10 +18,10 @@ public String index() {
 	    return "forward:/employee.html";
 	  }
 	  
-	 // @GetMapping("/")
-	   // public String login() {
-	     //   return "forward:/login.html"; 
-	   // }
+	  @GetMapping("/")
+	    public String login() {
+	        return "forward:/login.html"; 
+	    }
 
 	    @GetMapping("/ept/signup")
 	    public String signup() {
