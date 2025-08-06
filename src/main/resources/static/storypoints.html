@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"> 
+  <title>StoryPoints_Ept</title> 
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+  
+  <style>
+  
+    body {
+    
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background-color: #f5f6fa;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #e8e4ff;
+      padding: 22px 20px;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    .logout {
+      color: #1a237e;
+      text-decoration: none;
+      font-size: 0.9em;
+    }
+
+    .logout:hover {
+      text-decoration: underline;
+    }
+
+    .task-icon {
+      margin-right: 8px;
+    }
+
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 20px;
+      background-color: #f5f6fa;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 8px 14px;
+      border: none;
+      background-color: #dbe2ff;
+      border-radius: 8px;
+      color: #000;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .filter-btn.active {
+      background-color: #2a45d4;
+      color: white;
+    }
+
+    .right-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .export-btn {
+      background-color: #2a45d4;
+      color: white;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .export-btn:hover {
+      background-color: #1e32a0;
+    }
+
+    .search-box {
+      padding: 7px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+    }
+
+    thead {
+      background-color: #f0f0f0;
+    }
+     thead th { 
+    background-color: #dbe2ff;
+    color: #1e32a0;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 12px 20px;
+}
+
+    th, td {
+      text-align: left;
+      padding: 12px 20px;
+      font-weight: 500;
+    }
+
+    .table-container {
+      margin: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    select {
+      padding: 7px 10px;
+      border-radius: 6px;
+      border: 1px solid #333;
+      background-color: white;
+      font-weight: 500;
+    }
+    
+    .card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  margin: 20px;
+}
+
+table tr:nth-child(even) {
+  background-color: #f9f9ff;
+}
+
+table tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+    
+    
+    .right-controls {
+      position: relative;
+      width: 250px;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 10px 10px 10px 35px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .right-controls .fa-search {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+      pointer-events: none; 
+    }
+    
+    
+    .gradient-header {
+    background: linear-gradient(90deg, #77c1c9 0%, #7ce7508c 100%);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.1rem;
+   }
+    
+   .gradient-header,
+.gradient-header * {
+  color: #fff !important;     
+  font-weight: bold !important;   
+  font-size: medium !important;  
+  height:2rem;
+  
+}   
+    
+  .fa-rainbow {
+background: linear-gradient(270deg, #eaed68, #dd920a, #fff, #47c2ff, #cc4feb);
+    background-size: 1000% 1000%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow-move 3s linear infinite;
+}
+@keyframes rainbow-move {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+  
+}  
+
+
+     /*  Mobile view */
+
+@media (max-width: 768px) {
+  header,
+  .filters {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .gradient-header {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 16px 14px;
+    gap: 8px;
+    height: auto;
+  }
+
+  .gradient-header * {
+    font-size: 0.95rem !important;
+    height: auto;
+  }
+
+  .right-controls {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-left: 0;
+  }
+
+  .search-box {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    font-size: 15px;
+  }
+
+  .right-controls .fa-search {
+    left: 10px;
+    top: 42%;
+  }
+
+  .export-btn {
+    justify-content: center;
+    width: 100%;
+    font-size: 0.9rem;
+  }
+
+  .filters {
+    padding: 0px 12px;
+  }
+
+  .filter-btn,
+  select {
+    width: 100%;
+    font-size: 0.95rem;
+  }
+
+  .table-container {
+    margin: 10px;
+    overflow-x: auto;
+  }
+
+  table {
+    min-width: 600px;
+  }
+
+  .card {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  thead th,
+  td {
+    font-size: 0.9rem;
+    padding: 10px 14px;
+  }
+}
+
+
+
+/* Hide by default */
+.mobile-search-wrapper {
+  display: none;
+}
+
+/* Show and fix in mobile */
+
+@media (max-width: 768px) {
+  .mobile-search-wrapper {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 74px;
+    right: 10px;
+    background: #fff;
+    padding: 0px 0px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    width: 49%;
+    max-width: 280px;
+  }
+
+  .mobile-search-wrapper .fa-search {
+    position: absolute;
+    left: 20px;
+    color: #888;
+  }
+
+  .mobile-search-wrapper .search-box {
+    padding: 10px 10px 10px 35px;
+    font-size: 15px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+  }
+
+  /* Adjust table position to avoid overlapping the fixed search */
+  .table-container {
+    margin-top: 58px;
+  }
+}
+
+@media (max-width: 768px) {
+  .right-controls {
+    display: none;
+  }
+}
+   
+  </style>
+</head>
+<body>
+<header class="gradient-header">
+  <!-- Left side: Icon and Title -->
+  <div style="display: flex; align-items: center; gap: 0.5rem;">
+  <a href="/ept/home/manager" style="font-size: 1.2rem; text-decoration: none;">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h2 style="margin: 0; font-size: 1.2rem; font-weight: bold;">Story Points</h2>
+  </div>
+<img src="/images/logo.png" alt="User Icon" style="width: 42px; height: 30px;">
+</header>
+<div class="card table-container">
+  <div class="filters">
+   <div class="right-controls">
+    <i class="fas fa-search"></i>
+    <input class="search-box" type="text" placeholder="Search by email" />
+  </div>
+  </div>
+  
+  <div class="mobile-search-wrapper">
+  <i class="fas fa-search"></i>
+  <input type="text" class="search-box mobile-search" placeholder="Search by email" />
+</div>
+  
+  
+
+<!-- <div class="card table-container"> -->
+  <table>
+    <thead>
+      <tr>
+        <th>S.No</th>
+        <th>Name</th>
+        <th>Total Tasks</th>
+        <th>Completed Tasks</th>
+        <th>Pending Tasks</th>
+        <th>Total StoryPoints</th>
+      </tr>
+    </thead>
+    <tbody id="taskSummaryBody">
+      <!-- Data will be injected here -->
+    </tbody>
+  </table>
+</div>
+
+
+<script>
+  // Fetch tasks and populate summary table
+  fetch(`/api/manager/tasks/${localStorage.getItem("EmpEmail")}`)
+    .then(response => response.json())
+    .then(data => {
+      const summary = {};
+
+      data.forEach(task => {
+         const email = task.person || 'Unassigned'; 
+       
+        if (!summary[email]) {
+          summary[email] = {
+            total: 0,
+            completed:0,
+            pending: 0,
+            completedStoryPoints: 0
+          };
+        }
+
+        summary[email].total += 1;
+        
+        if (task.status == "Completed") {
+            summary[email].completed += 1;
+          }
+
+        if (task.status !== "Completed") {
+          summary[email].pending += 1;
+        }
+
+        if (task.status === "Completed") {
+          summary[email].completedStoryPoints += task.storypoints || 0;
+        }
+      });
+
+      const tbody = document.getElementById("taskSummaryBody");
+      tbody.innerHTML = Object.entries(summary)
+        .map(([email, stats], index) => `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${email}</td>
+            <td>${stats.total}</td>
+            <td>${stats.completed}</td>
+            <td>${stats.pending}</td>
+            <td>${stats.completedStoryPoints}</td>
+          </tr>
+        `).join("");
+    })
+    .catch(error => {
+      console.error("Error fetching tasks:", error);
+      document.getElementById("taskSummaryBody").innerHTML = `
+        <tr><td colspan="5">Failed to load data</td></tr>
+      `;
+    });
+  
+  
+  document.addEventListener('DOMContentLoaded', function () {
+	     /*  document.querySelector('.search-box').addEventListener('input', function () { 
+	      const query = this.value.toLowerCase();
+	      const rows = document.querySelectorAll('#taskSummaryBody tr');
+
+	      rows.forEach(row => {
+	        // Get the Name column (second td)
+	        const nameCell = row.querySelectorAll('td')[1];
+	        const nameText = nameCell ? nameCell.textContent.toLowerCase() : '';
+
+	        if (nameText.includes(query)) {
+	          row.style.display = '';
+	        } else {
+	          row.style.display = 'none';
+	        }
+	      });
+	    }); */
+	  document.querySelectorAll('.search-box').forEach(input => {
+		  input.addEventListener('input', function () {
+		    const query = this.value.toLowerCase();
+		    const rows = document.querySelectorAll('#taskSummaryBody tr');
+
+		    rows.forEach(row => {
+		      const nameCell = row.querySelectorAll('td')[1];
+		      const nameText = nameCell ? nameCell.textContent.toLowerCase() : '';
+
+		      row.style.display = nameText.includes(query) ? '' : 'none';
+		    });
+		  });
+		});
+
+	  }); 
+	  
+	  
+</script>
+</body>
+</html>

@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>Employees_Data_Ept</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f9;
+      min-height: 100vh;
+    }
+    
+    .custom-header {
+  background: linear-gradient(90deg, #77c1c9 0%, #7ce7508c 100%);
+  padding: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.1rem;
+  position: relative;
+}
+    
+
+ /*    header {
+      background-color: #fff;
+      padding: 1.2rem 2rem 1.2rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ededed;
+    } */
+
+    header h2 {
+      margin: 0;
+      color: #222;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+
+    .settings-icons {
+      display: flex;
+      gap: 16px;
+    }
+
+    .settings-icons i {
+      color: #e74c3c;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 30px auto;
+      background: none;
+      box-shadow: none;
+      border-radius: 0;
+      padding: 0 40px;
+    }
+
+    .title-section {
+      margin-bottom: 1.5rem;
+    }
+    .title-section h1 {
+      margin: 0 0 1rem 0;
+      font-size: 2rem;
+      font-weight: 600;
+      color: #222;
+    }
+    .title-section .page-index {
+      display: inline-block;
+      background-color:#969995;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 4px;
+      padding: 3px 12px;
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .users-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+      gap: 28px 36px;
+     /*  margin-top: 80px; */
+     margin-top:-11px;
+    }
+
+    .user-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(30,64,175,0.05);
+      padding: 26px 24px 22px 24px;
+      display: flex;
+      gap: 22px;
+      align-items: flex-start;
+      min-width: 320px;
+      min-height: 160px;
+    }
+
+    .user-avatar {
+      font-size: 3.1rem;
+      color: #5ea320;
+      flex-shrink: 0;
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+
+    .user-name {
+      font-weight: bold;
+      font-size: 1.13rem;
+      color: #222;
+      margin-right: 5px;
+      text-transform: uppercase;
+    }
+    .user-dept {
+      color: #e74c3c;
+      font-size: 1.05rem;
+      font-weight: 500;
+      margin-left: 3px;
+    }
+
+    .user-contact {
+      margin-top: 5px;
+    }
+
+    .user-contact .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #1e40af;
+      margin-bottom: 3px;
+      font-size: 1rem;
+    }
+
+    .user-contact .contact-row i {
+      min-width: 18px;
+      color: #da0d14;
+    }
+
+    .user-contact .contact-row .fa-users {
+      color: #6c2eb6;
+    }
+
+    @media (max-width: 900px) {
+      .users-grid {
+        grid-template-columns: 1fr;
+        gap: 22px;
+      }
+      .container {
+        padding: 0 8px;
+      }
+    }
+    @media (max-width: 650px) {
+      .user-card {
+        flex-direction: column;
+        align-items: flex-start;
+        min-height: auto;
+      }
+    }
+    
+       
+    .delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #dc3545;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  color: #a71d2a;
+}
+   
+  /* Reduce icon size */
+.smaller-icon .swal2-icon {
+  font-size: 50px !important;
+  width: 60px !important;
+  height: 60px !important;
+  line-height: 60px !important;
+}
+
+.small-popup {
+  font-size: 15px !important;
+  width: 360px !important;
+}
+
+.small-title {
+  font-size: 15px !important;
+}
+
+
+.bigger-btn {
+  font-size: 14px !important;
+  padding: 8px 16px !important;
+}
+
+ .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .toast {
+      position: relative;
+      min-width: 250px;
+      max-width: 350px;
+      background-color: white;
+      color: #333;
+      padding: 12px 40px 12px 15px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      animation: fadeInOut 5s forwards;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      border-left: 4px solid transparent;
+    }
+
+    .toast.success {
+      border-left-color: #4caf50;
+    }
+
+    .toast.error {
+      border-left-color: #f44336;
+    }
+
+    .toast.info {
+      border-left-color: #2196f3;
+    }
+
+    .toast-title {
+      font-weight: bold;
+      margin-bottom: 2px;
+      color: #333;
+    }
+
+    .toast-message {
+      color: #666;
+    }
+
+    .toast-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #999;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(-20px); }
+      10% { opacity: 1; transform: translateY(0); }
+      90% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-20px); }
+    }
+    
+   
+   /*   .right-controls {
+      position: relative;
+      width: 250px;
+      margin-left: 1016px;
+      margin-top: 24px;
+      margin-bottom: -61px;
+
+    }
+
+
+    .search-box {
+      width: 100%;
+      padding: 10px 10px 10px 30px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .right-controls .fa-search {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+      pointer-events: none; 
+    } */
+     
+   
+   
+
+ /* Base styles (for desktop) */
+.filters {
+  display: flex;
+  justify-content: flex-end;
+  margin: 1rem 2rem;
+}
+
+.right-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 250px;
+  margin-right: 10px;
+}
+
+.search-box {
+  padding: 10px 10px 10px 35px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.right-controls i {
+  position: absolute;
+  margin-left: 10px;
+  color: #888;
+}
+   
+   
+ 
+
+@media (max-width: 768px) {
+  .custom-header {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 16px 16px;
+  }
+
+  .custom-header h2 {
+    font-size: 1rem;
+  }
+
+     .filters {
+        padding: 12px 0px;
+        margin-top: -5px;
+        margin-bottom: -33px;
+        margin-left: 11px;
+        margin-right: 0px;
+    }
+
+  .right-controls {
+    width: 50%;
+    max-width: 100%;
+    gap: 0.5rem;
+  }
+
+  .search-box {
+    font-size: 0.9rem;
+  }
+
+  .container {
+    padding: 0 0.5rem;
+  }
+
+  .users-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+   
+   
+ </style>
+</head>
+<body>
+
+<div id="toast-container" class="toast-container"></div>
+<!--   <header style="background: linear-gradient(90deg, #77c1c9 0%, #7ce7508c 100%);padding: 0.9rem;display: flex;justify-content: space-between;align-items: center;margin-top: 0.1rem;position: relative;"> 
+ -->    
+ <header class="custom-header">
+ <div style="display: flex; align-items: center; gap: 0.5rem;">
+    <a href="/ept/home/manager" style="color: #fff; font-size: 1.2rem; text-decoration: none;">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h2 style="margin: 0; font-size: medium; font-weight: bold; color:#fff;">Employees Data</h2>
+  </div>
+    <img src="/images/logo.png" alt="User Icon" style="width: 42px; height: 30px;">
+  </header>
+  
+  <div class="filters">
+   <div class="right-controls">
+    <i class="fas fa-search"></i>
+    <input class="search-box" type="text" placeholder="Search by email" />
+  </div>
+  </div>
+
+<div class="container">
+<!--   <div class="title-section">
+    <span class="page-index">1</span>
+  </div> -->
+  <div class="users-grid" id="usersGrid">
+    <!-- User cards will be injected here by JavaScript -->
+  </div>
+</div>
+
+ 
+
+<script>
+
+//Toast notification function
+function showToast(type, title, message) {
+  const toastContainer = document.getElementById("toast-container");
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  const toastTitle = document.createElement("div");
+  toastTitle.className = "toast-title";
+ // toastTitle.textContent = title;
+  toastTitle.innerHTML = title;
+  const toastMessage = document.createElement("div");
+  toastMessage.className = "toast-message";
+  toastMessage.textContent = message;
+  const closeButton = document.createElement("button");
+  closeButton.className = "toast-close";
+  //closeButton.textContent = "×";
+  closeButton.innerHTML = '<i class="fas fa-times"></i>';
+  closeButton.onclick = () => {
+    toast.style.animation = "none";
+    toast.remove();
+  };
+  toast.appendChild(toastTitle);
+  toast.appendChild(toastMessage);
+  toast.appendChild(closeButton);
+  toastContainer.appendChild(toast);
+  setTimeout(() => {
+    if (toast.parentNode) {
+      toast.remove();
+    }
+  }, 2000);
+}
+
+
+// Helper to render info or fallback
+function show(val) {
+  return val ? val : "Not Available";
+}
+/* 
+ function userCard(user) {
+	  return `
+	    <div class="user-card" style="position: relative;">
+	      <button class="delete-btn" title="Delete User" onclick="deleteUser('${user.email}')">
+	        <i class="fas fa-trash-alt"></i>
+	      </button>
+
+	      <div class="user-avatar">
+	        <i class="fas fa-user-circle"></i>
+	      </div>
+	     
+	      <div class="user-info">
+	        <div class="user-row">
+	          <span class="user-name">${user.name}</span>
+	          <span class="user-dept">${user.department}</span>
+	        </div>
+	        <div class="user-contact">
+	          <div class="contact-row">
+	            <i class="fas fa-envelope"></i>
+	            ${show(user.email)}
+	          </div>
+	          <div class="contact-row">
+	            <i class="fas fa-phone"></i>
+	            ${show(user.mobileNumber)}
+	          </div>
+	          <div class="contact-row">
+	            <i class="fas fa-id-badge"></i>
+	            ${show(user.reportingto)}
+	          </div>
+	        </div>
+	      </div>     
+	    </div>   
+	  `;
+	} 
+	 */
+	 function userCard(user) {
+		  return `
+		    <div class="user-card" style="position: relative;">
+		      <button class="delete-btn" title="Delete User" onclick="deleteUser('${user.email}')">
+		        <i class="fas fa-trash-alt"></i>
+		      </button>
+
+		      <div class="user-avatar">
+		        <i class="fas fa-user-circle"></i>
+		      </div>
+		     
+		      <div class="user-info">
+		        <div class="user-row">
+		          <span class="user-name">${user.name}</span>
+		          <span class="user-dept">${user.department}</span>
+		        </div>
+		        <div class="user-contact">
+		          <div class="contact-row">
+		            <i class="fas fa-envelope"></i>
+		            <span class="email">${show(user.email)}</span>
+		          </div>
+		          <div class="contact-row">
+		            <i class="fas fa-phone"></i>
+		            ${show(user.mobileNumber)}
+		          </div>
+		          <div class="contact-row">
+		            <i class="fas fa-id-badge"></i>
+		            ${show(user.reportingto)}
+		          </div>
+		        </div>
+		      </div>     
+		    </div>   
+		  `;
+		}
+
+
+// Fetch users from backend
+/* document.addEventListener("DOMContentLoaded", function () {
+  const usersGrid = document.getElementById("usersGrid");
+  fetch(`/api/manager/employees/${localStorage.getItem("EmpEmail")}`)
+    .then(response => {
+      if (!response.ok) throw new Error("Failed to fetch users");
+      return response.json();
+    })
+    .then(users => {
+      usersGrid.innerHTML = users.map(userCard).join('');
+    })
+    .catch(error => {
+      usersGrid.innerHTML = `<p style="color:red;">Error loading users: ${error.message}</p>`;
+      console.error("Error fetching user data:", error);
+    });
+}); */
+
+      document.addEventListener("DOMContentLoaded", function () {
+	  const usersGrid = document.getElementById("usersGrid");
+
+	  fetch(`/api/manager/employees/${localStorage.getItem("EmpEmail")}`)
+	    .then(response => {
+	      if (!response.ok) throw new Error("Failed to fetch users");
+	      return response.json();
+	    })
+	    .then(users => {
+	      const employeeUsers = users.filter(user => user.role?.toLowerCase() !== 'manager');
+	      usersGrid.innerHTML = employeeUsers.map(userCard).join('');
+	    })
+	    .catch(error => {
+	      usersGrid.innerHTML = `<p style="color:red;">Error loading users: ${error.message}</p>`;
+	      console.error("Error fetching user data:", error);
+	    });
+	});
+
+
+	
+	function deleteUser(email) {
+		  Swal.fire({
+		    title: `Are you sure you want to delete ${email}?`,
+		    icon: 'warning',
+		    showCancelButton: true,
+		    confirmButtonColor: '#d33',
+		    cancelButtonColor: '#3085d6',
+		    confirmButtonText: 'Yes, delete it!',
+		    customClass: {
+		      popup: 'small-popup',
+		      title: 'small-title',
+		      confirmButton: 'small-btn',
+		      cancelButton: 'small-btn',
+		      icon: 'smaller-icon'
+		    }
+		  }).then((result) => {
+		    if (result.isConfirmed) {
+		      showToast('info','<i class="fas fa-hourglass-half" style="color: orange;"></i> Deleting...','Please wait while we delete the employee.');
+
+		      fetch(`/api/manager/deleteUser/${encodeURIComponent(email)}`, {
+		        method: "DELETE"
+		      })
+		      .then(response => {
+		        if (!response.ok) throw new Error(); 
+		        showToast("success",'<i class="fas fa-check" style="color: green;"></i> Success!','Employee Deleted Successfully.');
+		        setTimeout(() => location.reload(), 1500);
+		      })
+		      .catch(() => {
+		        showToast('error', '<i class="fas fa-xmark" style="color: red; "></i> Failed', 'Failed to delete employee. Please try again.');
+		      });
+		    }
+		  });
+		}
+
+	
+	document.addEventListener('DOMContentLoaded', function () {
+		  document.querySelector('.search-box').addEventListener('input', function () {
+		    const query = this.value.toLowerCase();
+		    const cards = document.querySelectorAll('.user-card');
+
+		    cards.forEach(card => {
+		      const emailElement = card.querySelector('.email');
+		      const emailText = emailElement ? emailElement.textContent.toLowerCase() : '';
+
+		      if (emailText.includes(query)) {
+		        card.style.display = 'flex'; // since it's a flexbox
+		      } else {
+		        card.style.display = 'none';
+		      }
+		    });
+		  });
+		});
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html>

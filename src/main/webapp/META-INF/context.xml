@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Context>
+    <JarScanner>
+        <JarScanFilter defaultPluggabilityScan="false"
+                       defaultTldScan="true"
+                       defaultJarScan="true"
+                       tldSkip="*.jar"
+                       pluggabilitySkip="jackson-*.jar,jakarta.mail-*.jar,jakarta.activation-*.jar"/>
+    </JarScanner>
+</Context>

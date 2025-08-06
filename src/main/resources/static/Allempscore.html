@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Score_Board_Ept</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+  
+  <style>
+  
+    body {
+    
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background-color: #f5f6fa;
+      color: #22223b;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      background: linear-gradient(90deg, #77c1c9 0%, #7ce7508c 100%);
+      padding: 22px 20px;
+      font-weight: bold;
+      font-size: 1.2em;
+      color: #fff;
+    }
+    header .fa-trophy {
+      margin-right: -4px;
+      color: #ffd700;
+      font-size: 1.5em;
+      text-shadow: 0 2px 10px #fff5;
+    }
+    .card {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 18px rgba(30,64,175,0.08);
+      padding: 1.5rem 1.2rem;
+      margin: 28px auto;
+      max-width: 80rem;
+    }
+    h2 {
+      margin: 0;
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #1e40af;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+    }
+    thead th {
+      background-color: #dbe2ff;
+      color: #1e32a0;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 12px 20px;
+      text-align: left;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    tbody td {
+      padding: 12px 20px;
+      font-weight: 500;
+      border-bottom: 1px solid #f0f1f3;
+    }
+    tbody tr:nth-child(odd) {
+      background-color: #f9f9ff;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #fff;
+    }
+    .score {
+      font-weight: bold;
+      color: #047857;
+      background: linear-gradient(90deg, #a7ffeb 0%, #faffd1 100%);
+      padding: 6px 16px;
+      border-radius: 18px;
+      box-shadow: 0 1px 4px #00000012;
+      display: inline-block;
+    }
+    .overdue {
+      color: #e11d48;
+      font-weight: bold;
+    }
+    .points {
+      color: #f59e42;
+      font-weight: bold;
+    }
+    @media (max-width: 700px) {
+      .card { padding: .7rem .3rem; }
+      table, thead, tbody, th, td, tr { font-size: 0.93rem; }
+      thead th, tbody td { padding: 8px 7px; }
+    }
+    .search-box {
+      width: 100%;
+      max-width: 260px;
+      padding: 8px 10px;
+      margin-bottom: 12px;
+      border-radius: 7px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      outline: none;
+      box-sizing: border-box;
+    }
+    .search-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+    
+    .gradient-header {
+    background: linear-gradient(90deg, #77c1c9 0%, #7ce7508c 100%);
+    padding: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.1rem;
+   }
+    
+   .gradient-header,
+.gradient-header * {
+  color: #fff !important;         
+  font-weight: bold !important;     
+  font-size: medium !important;     
+}   
+    
+  .fa-rainbow {
+background: linear-gradient(270deg, #eaed68, #dd920a, #fff, #47c2ff, #cc4feb);
+    background-size: 1000% 1000%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow-move 3s linear infinite;
+}
+@keyframes rainbow-move {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}  
+
+
+
+  .search-container {
+        position: relative;
+    width: 250px;
+    margin-left: 64rem;
+}
+
+    .search-box {
+      width: 100%;
+      padding: 10px 10px 10px 35px; /* left padding for icon */
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .search-container i {
+      position: absolute;
+      top: 39%;
+      left: 10px;
+      transform: translateY(-50%);
+      color: #aaa;
+      pointer-events: none;
+    }
+
+
+  /*  Mobile View */
+   
+/*  @media (max-width: 768px) {
+  .gradient-header h2 {
+    font-size: 1.1rem !important;
+  }
+
+  .gradient-header img {
+    align-self: flex-end;
+  }
+
+  .card {
+    padding: 1rem 0.6rem;
+    margin: 20px 10px;
+  }
+
+  .search-row {
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .search-box {
+    max-width: 50%;
+    font-size: 0.95rem;
+    padding: 8px;
+    margin-bottom: 3px;
+    margin-top: 11px;
+    margin-left: -181px;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  thead th, tbody td {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
+
+  .score {
+    padding: 4px 10px;
+    font-size: 0.9rem;
+  }
+
+  .overdue, .points {
+    font-size: 0.95rem;
+  }
+}
+ 
+ */
+ 
+ @media (max-width: 768px) {
+  .gradient-header h2 {
+    font-size: 1.1rem !important;
+  }
+
+ /*  .gradient-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+ */
+  .gradient-header img {
+    align-self: flex-end;
+  }
+
+  .card {
+    padding: 1rem 0.6rem;
+    margin: 20px 10px;
+  }
+
+     .search-container {
+        width: 56%;
+        max-width: 90%;
+        margin: 13px auto -8px auto;
+        margin-left: 0px;
+    }
+  .search-box {
+    font-size: 0.95rem;
+    padding: 8px 8px 8px 32px;
+  }
+
+  .search-container i {
+    font-size: 0.9rem;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  thead th,
+  tbody td {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
+
+  .score {
+    padding: 4px 10px;
+    font-size: 0.9rem;
+  }
+
+  .overdue,
+  .points {
+    font-size: 0.95rem;
+  }
+}
+ 
+
+
+
+  </style>
+</head>
+<body>
+
+<header class="gradient-header">
+  <!-- Left side: Icon and Title -->
+  <div style="display: flex; align-items: center; gap: 0.5rem;">
+    <a href="/ept/home/manager" style="font-size: 1.2rem; text-decoration: none;">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+  <i class="fa-solid fa-trophy"></i>
+    <h2 style="margin: 0; font-size: 1.2rem; font-weight: bold;">Score Board</h2>
+  </div>
+    <img src="/images/logo.png" alt="User Icon" style="width: 42px; height: 30px;">
+</header>
+<div class="card">
+  <h2>Employee Scores</h2>
+<div class="search-container">
+    <i class="fas fa-search"></i>
+    <input class="search-box" type="text" placeholder="Search by Email...">
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Person</th>
+        <th>Total Story Points</th>
+        <th>Overdue Tasks</th>
+        <th>Score<br><span style="font-weight:400;font-size:.9em;">(Story Points - Overdues)</span></th>
+      </tr>
+    </thead>
+    <tbody id="scoreboardBody">
+      <!-- Data will be injected here -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+// Fetch tasks and populate score board
+fetch(`/api/manager/tasks/${localStorage.getItem("EmpEmail")}`)
+  .then(response => response.json())
+  .then(data => {
+    const summary = {};
+    const now = new Date();
+    now.setHours(0,0,0,0);
+
+    data.forEach(task => {
+      // Prefer email as the unique key, fallback to person
+      let key = (task.email || task.person || 'Unassigned').trim().toLowerCase();
+      let displayName = task.person || task.email || 'Unassigned';
+
+      if (!summary[key]) {
+        summary[key] = {
+          displayName,
+          totalStoryPoints: 0,
+          overdues: 0
+        };
+      }
+      summary[key].totalStoryPoints += Number(task.storypoints) || 0;
+
+      if (task.end_date) {
+        const endDate = new Date(task.end_date);
+        endDate.setHours(0,0,0,0);
+
+        if (task.status === "Not Started" || task.status === "In Progress") {
+          if (endDate < now) {
+            summary[key].overdues += 1;
+          }
+        } else if (task.status === "Completed") {
+          let completedDate = null;
+          if (task.completed_at) completedDate = new Date(task.completed_at);
+          else if (task.updatedAt) completedDate = new Date(task.updatedAt);
+
+          if (completedDate) {
+            completedDate.setHours(0,0,0,0);
+            if (completedDate > endDate) {
+              summary[key].overdues += 1;
+            }
+          }
+        }
+      }
+    });
+
+    // Build table
+    const scoreboardBody = document.getElementById("scoreboardBody");
+    scoreboardBody.innerHTML = Object.values(summary)
+      .map(stats => {
+        const score = stats.totalStoryPoints - stats.overdues;
+        return `
+          <tr>
+            <td>${stats.displayName}</td>
+            <td class="points">${stats.totalStoryPoints}</td>
+            <td class="overdue">${stats.overdues}</td>
+            <td><span class="score">${score}</span></td>
+          </tr>
+        `;
+      }).join("");
+  })
+  .catch(error => {
+    console.error("Error fetching tasks:", error);
+    document.getElementById("scoreboardBody").innerHTML = `
+      <tr><td colspan="4">Failed to load data</td></tr>
+    `;
+  });
+
+// Simple search filter
+document.addEventListener('DOMContentLoaded', function () {
+  const searchBox = document.querySelector('.search-box');
+  searchBox.addEventListener('input', function () {
+    const query = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#scoreboardBody tr');
+    rows.forEach(row => {
+      const personCell = row.querySelectorAll('td')[0];
+      const personText = personCell ? personCell.textContent.toLowerCase() : '';
+      if (personText.includes(query)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1019 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+  <title>Employee_Task_List_Ept</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+  
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f6fa;
+      margin: 0;
+      padding: 1rem;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    button, select {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: #e0e7ff;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      border: 1px solid #ccc;
+    }
+    button.active, select.active {
+      background: #1e40af;
+      color: white;
+    }
+    #task-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      min-width: 900px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+    }
+    thead {
+      background: #309ea35e;
+    }
+    tr {
+      border-top: 1px solid #ddd;
+    }
+    @media (max-width: 768px) {
+      .top-bar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .top-bar select,
+      .top-bar input[type="text"] {
+        width: 48%;
+        min-width: unset;
+        max-width: unset;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+    }
+    .top-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      order: -1;
+    }
+    @media (min-width: 768px) {
+      .top-controls {
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        order: 1;
+        margin-left: 41.2rem;
+      }
+      .top-controls select,
+      .top-controls input {
+        margin-left: 0.5rem;
+      }
+    }
+    @media (max-width: 768px) {
+      .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .top-controls {
+        flex-direction: row;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+      }
+      .top-controls select,
+      .top-controls input[type="text"] {
+        flex: 1;
+        min-width: 0;
+      }
+      .top-controls select {
+        margin-right: 0.5rem;
+      }
+    }
+    #searchBox {
+      border: 1px solid #fff3cd;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 14px;
+      width: 180px;
+      outline: none;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+    #searchBox:focus {
+      border-color: #1e40af;
+      box-shadow: 0 0 6px rgba(30, 64, 175, 0.2);
+    }
+    @media (max-width: 767px) {
+      #searchBox {
+        width: 100%;
+      }
+    }
+    #exportBtn {
+      background-color: #1e40af;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+    }
+    #exportBtn:hover {
+      background-color: #1a3a99;
+    }
+    #exportBtn i {
+      font-size: 1rem;
+    }
+    .edit-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #555;
+      font-size: 16px;
+    }
+    .edit-btn:hover {
+      color: #007bff;
+    }
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .popup-overlay.active {
+      display: flex;
+    }
+    .popup-form {
+      background: #fff;
+      padding: 2rem 2rem 1.5rem 2rem;
+      border-radius: 12px;
+      min-width: 380px;
+      max-width: 95vw;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .popup-form h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+    .popup-form .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem 1.5rem;
+    }
+    .popup-form label {
+      display: flex;
+      flex-direction: column;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 0.2rem;
+      color: #222;
+    }
+    .popup-form input,
+    .popup-form select,
+    .popup-form textarea {
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      padding: 0.4rem 0.8rem;
+      outline: none;
+      margin-top: 0.3rem;
+      background: #fafbfc;
+      resize: none;
+      font-family: inherit;
+    }
+    .popup-form input[type="date"] {
+      color: #222;
+    }
+    .popup-form textarea {
+      min-height: 38px;
+      max-height: 70px;
+    }
+    .popup-form .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      margin-right: 14rem;
+    }
+    .popup-form .submit-btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      font-weight: bold;
+      padding: 0.6rem 1.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.18s;
+    }
+    .popup-form .submit-btn:hover {
+      background: #1e40af;
+    }
+    .popup-form .cancel-btn {
+      background: #f15a2d;
+      color: #fff;
+      border: none;
+      font-weight: bold;
+      padding: 0.6rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.18s;
+    }
+    .popup-form .cancel-btn:hover {
+      background: #da0d14;
+    }
+    @media (max-width: 540px) {
+      .popup-form {
+        padding: 1rem;
+        min-width: 0;
+        width: 98vw;
+      }
+      .popup-form .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .toast {
+      position: relative;
+      min-width: 250px;
+      max-width: 350px;
+      background-color: white;
+      color: #333;
+      padding: 12px 40px 12px 15px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      animation: fadeInOut 5s forwards;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      border-left: 4px solid transparent;
+    }
+    .toast.success {
+      border-left-color: #4caf50;
+    }
+    .toast.error {
+      border-left-color: #f44336;
+    }
+    .toast.info {
+      border-left-color: #2196f3;
+    }
+    .toast-title {
+      font-weight: bold;
+      margin-bottom: 2px;
+      color: #333;
+    }
+    .toast-message {
+      color: #666;
+    }
+    .toast-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #999;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(-20px); }
+      10% { opacity: 1; transform: translateY(0); }
+      90% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-20px); }
+    }
+    .status-filter select {
+      width: 190px;
+      padding: 6px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background-color: #eef2ff;
+      color: #000;
+      cursor: pointer;
+      outline: none;
+      text-align: left;
+      text-indent: 0px;
+    }
+    .status-filter select:focus {
+      border-color: #999;
+    }
+    .gradient-header {
+      background: linear-gradient(90deg, #77c1c9 0%, #7ce7508c 100%);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: -0.9rem;
+      width: 82.4rem;
+      margin-left: -1rem;
+    }
+    .gradient-header,
+    .gradient-header * {
+      color: #fff !important;
+      font-weight: bold !important;
+      font-size: medium !important;
+    }
+    #pagination-controls {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      background: #f9f9f9;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: 1rem;
+      justify-content: center;
+    }
+    #pagination-controls button {
+      padding: 0.3rem 0.8rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      background: #f0f0f0;
+      color: #333;
+    }
+    #pagination-controls button:disabled {
+      background: #e0e0e0;
+      color: #888;
+      cursor: not-allowed;
+    }
+    #pagination-controls button[style*="background: #1e40af"] {
+      background: #1e40af !important;
+      color: white !important;
+      font-weight: bold;
+    }
+    .tag {
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 0.3rem 0.6rem;
+      border-radius: 999px;
+      display: inline-block;
+    }
+    .tag.high { background: #fde2e2; color: #b91c1c; }
+    .tag.medium { background: #fff3cd; color: #856404; }
+    .tag.low { background: #d4edda; color: #155724; }
+    .tag.in-progress { background: #fff3cd; color: #212529; }
+    .tag.blocked { background: #cf22ef7a; color: #212529; width: 63px; }
+    .tag.completed { background: #d4edda; color: #155724; }
+    .tag.not-started { background: #fde2e2; color: #3730a3; }
+    .tag.completion-request { background: #fefcbf; color: #744210; }
+    
+
+    
+    /* ===================== MOBILE VIEW ===================== */
+    
+    
+    
+    @media (max-width: 768px) {
+
+  /* Header styling for mobile */
+  .gradient-header{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 16px 15px;
+    background-color: #f9f9f9; /* or your preferred color */
+    border-bottom: 1px solid #ccc;
+  }
+
+  /* Header title */
+  .header h2 {
+    font-size: 1.2rem;
+    margin: 0;
+    flex: 1 1 100%;
+    text-align: left;
+    color: #333;
+  }
+
+  /* If there are any icons or right-side elements in header */
+  .header-icons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+}
+    
+    
+@media (max-width: 768px) {
+
+  /* Layout adjustments for container */
+  .container,
+  .main-content,
+  .login-card,
+  .top-bar {
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 10px !important;
+    box-sizing: border-box;
+  }
+
+  /* Task List View title alignment */
+  .header h2 {
+    font-size: 1.2rem;
+    text-align: left;
+  }
+
+  /* Align top controls in single row */
+  .top-bar,
+  .top-controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 6px;
+    padding: 0;
+    margin: 0 !important;
+  }
+
+  /* Individual input/button adjustments */
+  .top-controls select,
+  .top-controls button,
+  .top-controls input[type="text"] {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.8rem;
+    padding: 6px 8px;
+  }
+
+  /* Fix icon spacing in Export button */
+  .top-controls button i {
+    margin-right: 5px;
+  }
+
+  /* Table responsiveness */
+  table {
+    font-size: 0.75rem;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 6px 4px;
+    white-space: nowrap;
+  }
+
+  /* Reduce padding in header and footer */
+  header,
+  footer {
+    padding: 10px 15px;
+  }
+
+  /* Scrollable table */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Logo scaling */
+  .logo-img {
+    max-width: 80px;
+    height: auto;
+  }
+
+  /* Reduce gaps */
+  .gap-1,
+  .gap-2,
+  .gap-3 {
+    gap: 4px !important;
+  }
+
+  /* Toast/Popup adjustments */
+  .toast-container {
+    left: 0 !important;
+    right: 0 !important;
+    width: 90% !important;
+    margin: auto;
+  }
+
+  /* Optional: Hide elements not needed on small screen */
+  .desktop-only {
+    display: none !important;
+  }
+
+}
+  
+ @media (max-width: 768px) {
+  .popup-form {
+    width: 95% !important;
+    max-width: 95vw;
+    height: auto;
+    max-height: 90vh;
+    padding: 20px 16px !important;
+    box-sizing: border-box;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 10000;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+  }
+
+  .popup-form h2 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .popup-form label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+  }
+
+  .popup-form input,
+  /* .popup-form select, */
+  .popup-form textarea {
+    width: 92%;
+    font-size: 1rem;
+    padding: 10px;
+    margin-bottom: -5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #f9f9f9;
+  }
+  
+  .popup-form select {
+  width: 98%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+
+}
+  
+
+  .popup-form .form-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+@media (max-width: 768px) {
+  .popup-form .form-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0 0 0 !important; /* override the large right margin */
+  }
+
+  .popup-form .submit-btn,
+  .popup-form .cancel-btn {
+    flex: 1; /* make both buttons share equal space */
+    padding: 0.6rem;
+    font-size: 1rem;
+    border-radius: 6px;
+  }
+}
+
+
+}
+
+    
+       
+  </style>
+</head>
+<body>
+<div id="toast-container" class="toast-container"></div>
+<header class="gradient-header">
+  <div style="display: flex; align-items: center; gap: 0.5rem;">
+    <a href="/ept/home/employee" style="color: #1e40af; font-size: 1.2rem; text-decoration: none;">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h2 style="margin: 0; font-size: 1.2rem; font-weight: bold;">Task List View</h2>
+  </div>
+  <a href="/ept/login" style="color: #1e40af; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 0.4rem;"></a>
+<img src="/images/logo.png" alt="User Icon" style="width: 42px; height: 30px;">
+</header>
+ <div class="top-bar" style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; padding: 1rem 0; margin-left: 155px;">
+  <div class="top-controls" style="display: flex; gap: 0.5rem; align-items: center;">
+    <select id="statusDropdown" onchange="handleStatusChange(this.value)">
+      <option value="All">All</option>
+      <option value="Blocked">Blocked</option>
+      <option value="Not Started">Not Started</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Completion Request">Completion Request</option>
+      <option value="Completed">Completed</option>
+    </select>
+    <button id="exportBtn" title="Export Tasks">
+      <i class="fa-solid fa-download"></i> Export
+    </button>
+    <input type="text" id="searchBox" placeholder="Search tasks..." />
+  </div>
+</div> 
+
+<div id="task-container"></div>
+<div id="pagination-controls"></div>
+<div class="popup-overlay" id="taskPopup">
+  <form class="popup-form" id="taskForm" autocomplete="off">
+    <h3 id="popupTitle">Edit Task</h3>
+    <div class="form-grid">
+      <label>
+        Description:
+        <input id="description" placeholder="Enter description" disabled />
+      </label>
+      <label>
+        Department:
+        <input id="department" placeholder="Enter department" disabled />
+      </label>
+      <label>
+        Area:
+        <input id="area" placeholder="Enter area" disabled />
+      </label>
+      <label>
+        Sub-area:
+        <input id="subArea" placeholder="Enter sub-area" disabled />
+      </label>
+      <label>
+        Priority:
+        <input id="priority" placeholder="Enter priority" disabled />
+      </label>
+      <label>
+        Person:
+        <input id="assignedTo" placeholder="Enter assignee name" disabled />
+      </label>
+      <label>
+        Start Date:
+        <input id="startDate" type="date" placeholder="dd-mm-yyyy"/>
+      </label>
+      <label>
+        End Date:
+        <input id="endDate" type="date" placeholder="dd-mm-yyyy" disabled/>
+      </label>
+      <label>
+        Status:
+        <select id="status" required>
+          <option value="">Select Status</option>
+          <option value="Not Started">Not Started</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Blocked">Blocked</option>
+          <option value="Completion Request">Completion Request</option>
+        </select>
+      </label>
+      <label>
+        Request Date:
+        <input id="requestDate" type="date" placeholder="dd-mm-yyyy" disabled/>
+      </label>
+      <label>
+        Bottlenecks:
+        <input id="bottlenecks" placeholder="Mention any bottlenecks" />
+      </label>
+      <label>
+        Remarks:
+        <textarea id="remarks" placeholder="Additional remarks"></textarea>
+      </label>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="submit-btn">Update</button>
+      <button type="button" class="cancel-btn" onclick="closeTaskPopup()">&laquo; Cancel</button>
+    </div>
+  </form>
+</div>
+<script>
+function showToast(type, title, message) {
+    const toastContainer = document.getElementById("toast-container");
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+    const toastTitle = document.createElement("div");
+    toastTitle.className = "toast-title";
+    toastTitle.innerHTML = title;
+    const toastMessage = document.createElement("div");
+    toastMessage.className = "toast-message";
+    toastMessage.textContent = message;
+    const closeButton = document.createElement("button");
+    closeButton.className = "toast-close";
+    closeButton.innerHTML = '<i class="fas fa-times"></i>';
+    closeButton.onclick = () => {
+        toast.style.animation = "none";
+        toast.remove();
+    };
+    toast.appendChild(toastTitle);
+    toast.appendChild(toastMessage);
+    toast.appendChild(closeButton);
+    toastContainer.appendChild(toast);
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.remove();
+        }
+    }, 2000);
+}
+
+function handleStatusChange(selectedStatus) {
+    currentStatus = selectedStatus;
+    currentPage = 1;
+    renderTasks(tasksInfo);
+}
+
+let tasksInfo = [];
+let currentStatus = "All";
+let searchQuery = "";
+let currentPage = 1;
+const pageSize = 10;
+
+function fetchTasks() {
+    return fetch(`/api/employee/tasks/${localStorage.getItem("EmpEmail")}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to fetch tasks');
+            return response.json();
+        })
+        .then(data => {
+            tasksInfo = data;
+            console.log("Fetched tasks:", tasksInfo);
+            renderTasks(tasksInfo);
+        })
+        .catch(error => {
+            console.error("Error loading tasks:", error);
+            tasksInfo = [];
+            showToast('error', '<i class="fas fa-xmark" style="color: red;"></i> Failed', 'Failed to fetch tasks.');
+            renderTasks(tasksInfo);
+        });
+}
+
+function renderTasks(tasks) {
+    const container = document.getElementById("task-container");
+    const pagination = document.getElementById("pagination-controls");
+    if (!container || !pagination) {
+        console.error("Task container or pagination controls not found!");
+        return;
+    }
+
+    let filtered = tasks && Array.isArray(tasks) ? tasks.filter(t =>
+        (currentStatus === "All" || t.status?.toLowerCase() === currentStatus.toLowerCase()) &&
+        (!searchQuery ||
+            (t.description && t.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (t.remarks && t.remarks.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (t.person && t.person.toLowerCase().includes(searchQuery.toLowerCase()))
+        )
+    ) : [];
+
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / pageSize);
+    if (currentPage > totalPages) currentPage = totalPages || 1;
+    const startIdx = (currentPage - 1) * pageSize;
+    const endIdx = startIdx + pageSize;
+    const paginated = filtered.slice(startIdx, endIdx);
+
+    container.innerHTML = `
+        <table>
+            <thead>
+                <tr>
+                    <th>Sl.No.</th>
+                    <th>Task No.</th>
+                    <th>Description</th>
+                    <th>Department</th>
+                    <th>Area</th>
+                    <th>Sub-area</th>
+                    <th>Priority</th>
+                    <th>Person</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Request Date</th>
+                    <th>Bottlenecks</th>
+                    <th>Remarks</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${paginated.map((task, i) => `
+                    <tr>
+                        <td>${startIdx + i + 1}</td>
+                        <td>${task.id}</td>
+                        <td>${task.description}</td>
+                        <td>${task.department}</td>
+                        <td>${task.area || '-'}</td>
+                        <td>${task.sub_area || '-'}</td>
+                        <td><span class="tag ${task.priority?.toLowerCase()}">${task.priority}</span></td>
+                        <td>${task.person}</td>
+                        <td>${task.start_date || '-'}</td>
+                        <td>${task.end_date || '-'}</td>
+                        <td><span class="tag ${task.status?.replace(" ", "-").toLowerCase()}">${task.status}</span></td>
+                        <td>${task.Request_date || '-'}</td>
+                        <td>${task.bottlenecks || '-'}</td>
+                        <td>${task.remarks || '-'}</td>
+                        <td>
+                            <button class="edit-btn" title="Edit" onclick="openEditTaskPopup(${task.id})">
+                                <i class="fa fa-pen"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join("")}
+            </tbody>
+        </table>
+    `;
+
+    let controls = '';
+    if (totalPages > 1) {
+        controls += `<button ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(1)">&laquo; First</button>`;
+        controls += `<button ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">&lsaquo; Prev</button>`;
+        let pageStart = Math.max(1, currentPage - 2);
+        let pageEnd = Math.min(totalPages, currentPage + 2);
+        for (let p = pageStart; p <= pageEnd; p++) {
+            controls += `<button ${p === currentPage ? 'style="background:#1e40af;color:white;" disabled' : ''} onclick="changePage(${p})">${p}</button>`;
+        }
+        controls += `<button ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Next 	&rsaquo;</button>`;
+        controls += `<button ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${totalPages})">Last &raquo;</button>`;
+    }
+    pagination.innerHTML = controls;
+}
+
+function changePage(page) {
+    event.preventDefault();
+    currentPage = page;
+    renderTasks(tasksInfo);
+}
+
+function openEditTaskPopup(index) {
+    console.log("Opening popup for task ID:", index);
+    const task = tasksInfo.find(task => task.id == index);
+    if (!task) {
+        console.error("Task not found for ID:", index);
+        showToast('error', '<i class="fas fa-xmark" style="color: red;"></i> Failed', 'Task not found.');
+        return;
+    }
+    document.getElementById("popupTitle").textContent = "Edit Task";
+    document.getElementById("description").value = task.description || '';
+    document.getElementById("department").value = task.department || '';
+    document.getElementById("area").value = task.area || '';
+    document.getElementById("subArea").value = task.sub_area || '';
+    document.getElementById("priority").value = task.priority || '';
+    document.getElementById("assignedTo").value = task.person || '';
+    document.getElementById("startDate").value = task.start_date || '';
+    document.getElementById("endDate").value = task.end_date || '';
+    document.getElementById("status").value = task.status || '';
+    document.getElementById("requestDate").value = task.Request_date || '';
+    document.getElementById("bottlenecks").value = task.bottlenecks || '';
+    document.getElementById("remarks").value = task.remarks || '';
+    document.getElementById("taskForm").setAttribute("data-edit-index", index);
+    document.getElementById("taskPopup").classList.add("active");
+}
+
+function closeTaskPopup() {
+    document.getElementById("taskPopup").classList.remove("active");
+    document.getElementById("taskForm").reset();
+    document.getElementById("taskForm").removeAttribute("data-edit-index");
+    document.getElementById("popupTitle").textContent = "Edit Task";
+}
+
+document.getElementById("taskForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    const form = event.target;
+    const submitBtn = form.querySelector(".submit-btn");
+    const originalText = submitBtn.innerText;
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Updating...";
+    
+    // Get form values
+    let requestDate = document.getElementById('requestDate').value;
+    const status = document.getElementById('status').value;
+    
+    // Set requestDate to today if status is 'Completion Request' and requestDate is empty
+      if (status === 'Completion Request' && !requestDate) {
+        const today = new Date().toISOString().split('T')[0];
+        requestDate = today;
+        document.getElementById('requestDate').value = today;
+    }  
+    
+   
+    const taskId = form.getAttribute("data-edit-index");
+    const taskData = {
+        id: taskId,
+        description: document.getElementById("description").value,
+        department: document.getElementById("department").value,
+        area: document.getElementById("area").value,
+        sub_area: document.getElementById("subArea").value,
+        priority: document.getElementById("priority").value,
+        person: document.getElementById("assignedTo").value,
+        start_date: document.getElementById("startDate").value,
+        end_date: document.getElementById("endDate").value,
+        status: status,
+        Request_date: requestDate,
+        bottlenecks: document.getElementById("bottlenecks").value,
+        remarks: document.getElementById("remarks").value
+    };
+    /* console.log("Sending task data:", taskData); */
+    if (taskId) {
+        try {
+            const response = await fetch(`/api/employee/updateTask/${taskId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(taskData)
+            });
+            console.log("Response status:", response.status);
+            const result = await response.text();
+            console.log("Response text:", result);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            if (result.trim() === "Task updated successfully.") {
+                showToast('success', '<i class="fas fa-check" style="color: green;"></i> Success!', 'Task updated successfully.');
+                closeTaskPopup();
+                await fetchTasks();
+            } else {
+                throw new Error("Unexpected response: " + result);
+            }
+        } catch (err) {
+            console.error("Error updating task:", err);
+            showToast('error', '<i class="fas fa-xmark" style="color: red;"></i> Failed', 'Failed to update task');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalText;
+        }
+    } else {
+        showToast('error', '<i class="fas fa-xmark" style="color: red;"></i> Failed', 'Invalid Task ID');
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalText;
+    }
+});
+
+document.getElementById("taskPopup").addEventListener("click", function(e) {
+    if (e.target === this) closeTaskPopup();
+});
+
+document.getElementById("searchBox").addEventListener("input", (e) => {
+    searchQuery = e.target.value;
+    currentPage = 1;
+    renderTasks(tasksInfo);
+});
+
+document.getElementById("exportBtn").addEventListener("click", () => {
+    const rows = [["Description", "Status", "Priority", "Due Date"]];
+    tasksInfo.forEach(task => {
+        rows.push([task.description, task.status, task.priority || "-", task.end_date || "-"]);
+    });
+    const csv = rows.map(r => r.map(value => `"${value}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "tasks_export.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+    fetchTasks();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+  <title>Manager_Task_List_Ept</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f6fa;
+      margin: 0;
+      padding: 1rem;
+    }
+    .controls, .status-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    button, select {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: #e0e7ff; 
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      border: 1px solid #ccc; 
+    }
+    button.active, select.active {
+      background: #1e40af;
+      color: white;
+    }
+    #task-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      overflow-x: auto;
+    }
+    #table-scroll-container {
+      overflow-y: auto;
+      overflow-x: auto;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    #table-scroll-container table {
+      min-width: 900px;
+    }
+    #pagination-container {
+      width: 100%;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      min-width: 900px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      font-size: medium;
+    }
+    thead {
+      background: #f0f0f0;
+    }
+    tr {
+      border-top: 1px solid #e0e7ff;
+      background-color: #309ea35e;
+    }
+    @media (max-width: 768px) {
+      .top-bar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .top-bar select,
+      .top-bar input[type="text"] {
+        width: 48%;
+        min-width: unset;
+        max-width: unset;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+    }
+    .top-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      order: -1;
+    }
+    .status-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    @media (min-width: 768px) {
+      .top-controls {
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        order: 1;
+        margin-left: 42rem;
+        margin-top: 0.2rem;
+      }
+      .top-controls select,
+      .top-controls input {
+        margin-left: 0.5rem;
+      }
+    }
+    @media (max-width: 768px) {
+      .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .top-controls {
+        flex-direction: row;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+      }
+      .top-controls select,
+      .top-controls input[type="text"] {
+        flex: 1;
+        min-width: 0;
+      }
+      .top-controls select {
+        margin-right: 0.5rem;
+        margin-left:-134px;
+      }
+      .status-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+    }
+    #searchBox {
+      border: 1px solid #fff3cd;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 14px;
+      width: 180px;
+      outline: none;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+    #searchBox:focus {
+      border-color: #1e40af;
+      box-shadow: 0 0 6px rgba(30, 64, 175, 0.2);
+    }
+    @media (max-width: 767px) {
+      #searchBox {
+        width: 100%;
+      }
+    }
+    #exportBtn {
+      background-color: #1e40af;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+    }
+    #exportBtn:hover {
+      background-color: #1a3a99;
+    }
+    #exportBtn i {
+      font-size: 1rem;
+    }
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .popup-form {
+      background: #fff;
+      border-radius: 18px;
+      padding: 32px 32px 24px 32px;
+      box-shadow: 0 6px 32px rgba(0,0,0,0.15);
+      max-width: 520px;
+      width: 100%;
+      min-width: 320px;
+    }
+    @media (min-width: 900px) {
+      .popup-form {
+        max-width: 540px;
+        width: 540px;
+      }
+    }
+    @media (min-width: 1200px) {
+      .popup-form {
+        max-width: 600px;
+        width: 600px;
+      }
+    }
+    .popup-form h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.35rem;
+      font-weight: bold;
+    }
+    .popup-form form {
+      display: flex;
+      flex-direction: column;
+    }
+    .edit-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      column-gap: 22px;
+      row-gap: 18px;
+      margin-bottom: 24px;
+    }
+    .edit-grid label {
+      font-weight: 500;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .edit-grid input,
+    .edit-grid select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: #fafbfc;
+      margin-bottom: 0;
+      margin-top: 4px;
+      box-sizing: border-box;
+      transition: border 0.2s;
+    }
+    .edit-grid input:focus,
+    .edit-grid select:focus {
+      border-color: #1e40af;
+      outline: none;
+      background: #fff;
+    }
+    .popup-form .popup-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: flex-start;
+      margin-left: 11rem;
+    }
+    .popup-form .popup-actions button {
+      font-size: 1.07rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 7px;
+      padding: 11px 28px;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .popup-form .popup-actions .btn-submit {
+      background-color: rgba(13, 110, 253, 0.919);
+      color: #fff;
+    }
+    .popup-form .popup-actions .btn-cancel {
+      background-color: #f15a2d;
+      color: #fff;
+    }
+    .popup-form .popup-actions .btn-cancel:hover {
+      background: #da0d14;
+    }
+    .popup-form .popup-actions .btn-submit:hover {
+      background: #1e40af;
+    }
+    @media (max-width: 600px) {
+      .popup-form {
+        padding: 16px 6vw 16px 6vw;
+        min-width: unset;
+        max-width: 98vw;
+        width: 98vw;
+      }
+      .edit-grid {
+        grid-template-columns: 1fr;
+        column-gap: 0;
+      }
+    }
+    .priority-high {
+      background-color: #fff;
+      border-left: 5px solid #1e40af;
+    }
+    .priority-medium {
+      background-color: #fff;
+      border-left: 5px solid #6b21a8;
+    }
+    .priority-low {
+      background-color: #fff;
+      border-left: 5px solid #1e40af;
+    }
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .toast {
+      position: relative;
+      min-width: 250px;
+      max-width: 350px;
+      background-color: white;
+      color: #333;
+      padding: 12px 40px 12px 15px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      animation: fadeInOut 5s forwards;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      border-left: 4px solid transparent;
+    }
+    .toast.success {
+      border-left-color: #4caf50;
+    }
+    .toast.error {
+      border-left-color: #f44336;
+    }
+    .toast.info {
+      border-left-color: #2196f3;
+    }
+    .toast-title {
+      font-weight: bold;
+      margin-bottom: 2px;
+      color: #333;
+    }
+    .toast-message {
+      color: #666;
+    }
+    .toast-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #999;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(-20px); }
+      10% { opacity: 1; transform: translateY(0); }
+      90% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-20px); }
+    }
+    .status-filter select {
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background-color: #eef2ff;
+      color: #000;
+      cursor: pointer;
+      outline: none;
+    }
+    .status-filter select:focus {
+      border-color: #999;
+    }
+    .gradient-header {
+        background: linear-gradient(90deg, #77c1c9 0%, #7ce7508c 100%);
+    padding: 1rem;
+    display: flex
+;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -0.9rem;
+    width: 82.46666666rem; 
+    margin-left: -1rem;
+}
+    .gradient-header,
+    .gradient-header * {
+      color: #fff !important;
+      font-weight: bold !important;
+      font-size: medium !important;
+      height: 2rem;
+    }    
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 1rem;
+      padding: 10px 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+      margin-bottom: 9px;
+      margin-top: -5px;
+    }
+    .pagination-btn {
+      background: #e5e7eb;
+      color: #333;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      margin: 0 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+    .pagination-btn:hover:not(:disabled) {
+      background: #d1d5db;
+    }
+    .pagination-btn.active {
+      background: #1e40af;
+      color: #fff;
+    }
+    .pagination-btn:disabled {
+      background: #f3f4f6;
+      color: #aaa;
+      cursor: not-allowed;
+    }
+    .pagination-ellipsis {
+      padding: 0 5px;
+      font-size: 1rem;
+      color: #999;
+    }
+    .tag {
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 0.3rem 0.6rem;
+      border-radius: 999px;
+      display: inline-block;
+      background: #ffff008c;
+    }
+    .tag.high { background: #fde2e2; color: #b91c1c; }
+    .tag.medium { background: #fff3cd; color: #856404; }
+    .tag.low { background: #d4edda; color: #155724; }
+    .tag.not-started { background: #da0d1494; color: #212529; }
+    .tag.in-progress { background: #fff3cd; color: #212529; }
+    .tag.blocked { background: #cf22ef7a; color: #212529; width: 63px; }
+    .tag.completion-request { background: #e0e7ff; color: #3730a3; }
+    .tag.completed { background: #d4edda; color: #155724; }
+    
+    
+    /* Mobile View */
+ 
+@media (max-width: 768px) {
+  /* Make popup-form responsive */
+  .popup-form {
+    width: 95% !important;
+    max-width: 95vw !important;
+    padding: 20px 16px;
+    box-sizing: border-box;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  
+
+  /* Responsive edit-grid */
+  .edit-grid {
+    display: grid;
+    grid-template-columns: 1fr !important;
+    row-gap: 16px;
+  }
+
+  .edit-grid div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .edit-grid label {
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  .edit-grid input,
+  .edit-grid select,
+  .edit-grid textarea {
+    width: 100% !important;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+
+  /* Fix for Manager/Remarks side-by-side groups */
+  .form-row {
+    flex-direction: column !important;
+    gap: 10px;
+  }
+
+  .remarks-group {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+
+  /* Buttons aligned side-by-side */
+/*   .popup-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  } */
+
+ /*  .popup-actions button {
+    width: 45%;
+    padding: 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    
+  }  */
+ 
+ 
+/*  @media (max-width: 768px) {
+  .popup-actions {
+    display: flex;
+    justify-content: flex-start; 
+    gap: 10px;
+    padding: 0 10px;
+    margin-top: 20px;
+    box-sizing: border-box;
+    width: 100%;
+  } */
+
+ /*  .popup-actions button {
+    flex: none; 
+    padding: 12px 18px;
+    font-size: 1rem;
+    text-align: center;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .btn-submit {
+    background-color: #2a45d4;
+    color: white;
+  }
+
+  .btn-cancel {
+    background-color: #e74c3c;
+    color: white;
+  }
+} */
+
+ 
+  /* Consistent mobile header */
+  .gradient-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    font-size: 0.95rem !important;
+    gap: 8px;
+    width: 100%;
+  }
+}
+
+/*  @media (max-width: 768px) {
+  .popup-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 0px;
+    flex-wrap: nowrap;
+  } 
+
+  .popup-actions button {
+    flex: 1 1 48%;  
+    padding: 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap;
+    margin-left:2px;
+  }
+
+  */
+
+@media (max-width: 768px) {
+  .popup-form .popup-actions {
+    display: flex;
+    justify-content: center; /* center horizontally */
+    gap: 12px;
+    margin-left: 0 !important;  /* override the desktop margin */
+    margin-top: 20px;
+    flex-wrap: nowrap;
+  }
+
+  .popup-form .popup-actions button {
+    padding: 10px 56px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .btn-submit {
+    background-color: #2a45d4;
+    color: white;
+  }
+
+  .btn-cancel {
+    background-color: #e74c3c;
+    color: white;
+  }
+}
+
+
+
+    
+  </style>  
+</head>
+<body>
+<div id="toast-container" class="toast-container"></div>
+<header class="gradient-header">
+
+  <div style="display: flex; align-items: center; gap: 0.5rem;">
+    <a href="/ept/home/manager" style="color: #1e40af; font-size: 1.2rem; text-decoration: none;">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h2 style="margin: 0; font-size: 1.2rem; font-weight: bold;">Task List View</h2>
+  </div>
+<img src="/images/logo.png" alt="User Icon" style="width: 42px; height: 30px;">
+</header>
+<div class="top-bar" style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; padding: 1rem 0; margin-left: 141px;">
+
+  <div class="top-controls">
+    <select id="statusDropdown" onchange="handleStatusDropdownChange(this.value)">
+      <option value="All">All</option>
+      <option value="Blocked">Blocked</option>
+      <option value="Not Started">Not Started</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Completion Request">Completion Request</option>
+      <option value="Completed">Completed</option>
+    </select>
+    <button id="exportBtn" title="Export Tasks">
+      <i class="fa-solid fa-download"></i> Export
+    </button>
+    <input type="text" id="searchBox" placeholder="Search tasks..." />
+  </div> 
+</div> 
+
+<div id="editTaskPopup" class="popup-overlay" style="display: none;">
+  <div class="popup-form">
+    <h3>Edit Task</h3>
+    <form id="editTaskForm">
+      <div class="edit-grid">
+        <div>
+          <label>Description:</label>
+          <input type="text" id="editDescription" />
+        </div>
+        <div>
+          <label>Department:</label>
+          <input type="text" id="editDepartment" />
+        </div>
+        <div>
+          <label>Area:</label>
+          <input type="text" id="editArea" />
+        </div>
+        <div>
+          <label>Sub-area:</label>
+          <input type="text" id="editSubarea" />
+        </div>
+        <div>
+          <label>Person:</label>
+          <input type="text" id="editPerson" />
+        </div>
+        <div>
+          <label>Start Date:</label>
+          <input type="date" id="editStartDate" />
+        </div>
+        <div>
+          <label>End Date:</label>
+          <input type="date" id="editEndDate" />
+        </div>
+        <div>
+          <label>Storypoints:</label>
+          <input type="number" id="editStorypoints" min="1" />
+        </div>
+        <div>
+          <label>Status:</label>
+          <select id="editStatus" required>
+            <option>Not Started</option>
+            <option>In Progress</option>
+            <option>Blocked</option>
+            <option>Completion Request</option>
+            <option>Completed</option>
+          </select>
+        </div>
+        <div>
+          <label>Request Date:</label>
+          <input type="date" id="editRequestDate" readonly/>
+        </div>
+        <div>
+          <label>Priority:</label>
+          <input type="text" id="editPriority" />
+        </div>
+        <div>
+          <label>Bottlenecks:</label>
+          <input type="text" id="editBottlenecks" />
+        </div>
+        <div>
+          <label>Completion Date:</label>
+          <input type="date" id="editCompletionDate" />
+        </div>
+        <div>
+          <label>Remarks:</label>
+          <input type="text" id="editRemarks" />
+        </div>
+      </div>
+      <div class="popup-actions">
+        <button type="submit" class="btn-submit">Update</button>
+        <button type="button" class="btn-cancel" onclick="closeEditTaskPopup()">&laquo; Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div id="task-container">
+  <div id="table-scroll-container"></div>
+  <div id="pagination-container"></div>
+</div>
+<script>
+function showToast(type, title, message) {
+    const toastContainer = document.getElementById("toast-container");
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+    const toastTitle = document.createElement("div");
+    toastTitle.className = "toast-title";
+    toastTitle.innerHTML = title;
+    const toastMessage = document.createElement("div");
+    toastMessage.className = "toast-message";
+    toastMessage.textContent = message;
+    const closeButton = document.createElement("button");
+    closeButton.className = "toast-close";
+    closeButton.innerHTML = '<i class="fas fa-times"></i>';
+    closeButton.onclick = () => {
+        toast.style.animation = "none";
+        toast.remove();
+    };
+    toast.appendChild(toastTitle);
+    toast.appendChild(toastMessage);
+    toast.appendChild(closeButton);
+    toastContainer.appendChild(toast);
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.remove();
+        }
+    }, 5000);
+}
+
+let tasks = [];
+let currentStatus = "All";
+let searchQuery = "";
+let currentPage = 1;
+const pageSize = 10;
+
+async function fetchTasks() {
+    try {
+        const res = await fetch(`/api/manager/tasks/${localStorage.getItem("EmpEmail")}`);
+        tasks = await res.json();
+        console.log("Fetched tasks:", tasks); // Debug
+        renderTasks();
+    } catch (err) {
+        console.error("Error fetching tasks:", err);
+        showToast("error", "Error", "Failed to fetch tasks.");
+    }
+}
+
+function renderPagination(page, pageCount) {
+    if (pageCount <= 1) return "";
+    function pageBtn(label, pageNum, isActive = false, isDisabled = false) {
+        return `<button class="pagination-btn${isActive ? ' active' : ''}" data-page="${pageNum}" ${isDisabled ? 'disabled' : ''}>${label}</button>`;
+    }
+    let html = '';
+    html += pageBtn('&laquo; First', 1, false, page === 1);
+    html += pageBtn('&lsaquo; Prev', page - 1, false, page === 1);
+    for (let i = 1; i <= pageCount; i++) {
+        if (i === 1 || i === pageCount || Math.abs(i - page) <= 1) {
+            html += pageBtn(i, i, i === page);
+        } else if (Math.abs(i - page) === 2) {
+            html += `<span class="pagination-ellipsis">…</span>`;
+        }
+    }
+    html += pageBtn('Next &rsaquo;', page + 1, false, page === pageCount);
+    html += pageBtn('Last &raquo;', pageCount, false, page === pageCount);
+    return `<div class="pagination-container">${html}</div>`;
+}
+
+function renderTasks() {
+    const tableContainer = document.getElementById("table-scroll-container");
+    const paginationContainer = document.getElementById("pagination-container");
+
+    let filtered = tasks
+        .filter(t => t && Object.keys(t).length > 0 && t.description)
+        .filter(t => {
+            const taskStatus = t.status ? t.status.toLowerCase() : "";
+            const filterStatus = currentStatus === "All" ? "" : currentStatus.toLowerCase();
+            return (
+                (currentStatus === "All" || taskStatus === filterStatus) &&
+                (!searchQuery ||
+                    (t.description && t.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                    (t.remarks && t.remarks.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                    (t.person && t.person.toLowerCase().includes(searchQuery.toLowerCase()))
+                )
+            );
+        });
+
+    const pageCount = Math.ceil(filtered.length / pageSize);
+    if (currentPage > pageCount) currentPage = pageCount > 0 ? pageCount : 1;
+    const startIdx = (currentPage - 1) * pageSize;
+    const endIdx = startIdx + pageSize;
+    const paginated = filtered.slice(startIdx, endIdx);
+
+    tableContainer.innerHTML = `
+        <table>
+            <thead>
+                <tr>
+                <th>Sl No.</th><th>Task No.</th><th>Description</th><th>Department</th><th>Area</th><th>Sub-area</th><th>Priority</th><th>Person</th><th>Storypoints</th><th>Start Date</th><th>End Date</th><th>Status</th><th>Request Date</th><th>Completion Date</th><th>Bottlenecks</th><th>Remarks</th><th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            ${paginated.map((task, index) => `
+            <tr class="priority-${task.priority?.toLowerCase() || 'none'}">
+                <td>${(currentPage - 1) * pageSize + index + 1}</td> 
+                        <td>${task.id}</td>
+                        <td>${task.description}</td>
+                        <td>${task.department}</td>
+                        <td>${task.area || '-'}</td>
+                        <td>${task.sub_area || '-'}</td>
+                        <td><span class="tag priority ${task.priority?.toLowerCase() || ''}">${task.priority || '-'}</span></td>
+                        <td>${task.person || '-'}</td>
+                        <td>${task.storypoints == null || task.storypoints == 0 ? '-' : task.storypoints}</td>
+                        <td>${task.start_date || '-'}</td>
+                        <td>${task.end_date || '-'}</td>
+                        <td><span class="tag ${task.status?.toLowerCase().replace(/\s/g, '-')}">${task.status}</span></td>
+                        <td>${task.Request_date || '-'}</td>
+                        <td>${task.completion_date || '-'}</td>
+                        <td>${task.bottlenecks || '-'}</td>
+                        <td>${task.remarks || '-'}</td>
+                        <td>
+                            <button class="edit-btn" title="Edit" style="background:none; border:none; cursor:pointer;" onclick="openEditTaskPopup(${task.id})">
+                                <i class="fa fa-pen"></i>
+                            </button>
+                            <button class="delete-btn" title="Delete" onclick="confirmDeleteTask(${task.id})">
+                                <i class="fa fa-trash" style="color:red;"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join("")}
+            </tbody>
+        </table>
+    `;
+
+    paginationContainer.innerHTML = renderPagination(currentPage, pageCount);
+
+    document.querySelectorAll(".pagination-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const pageAttr = this.getAttribute("data-page");
+            if (!isNaN(pageAttr)) currentPage = Number(pageAttr);
+            else if (pageAttr === "&lsaquo; Prev" && currentPage > 1) currentPage--;
+            else if (pageAttr === "Next &rsaquo;" && currentPage < pageCount) currentPage++;
+            else if (pageAttr === "&laquo; First") currentPage = 1;
+            else if (pageAttr === "Last &raquo;") currentPage = pageCount;
+            renderTasks();
+        });
+    });
+}
+
+function handleStatusDropdownChange(value) {
+    currentStatus = value;
+    currentPage = 1;
+    renderTasks();
+}
+
+document.getElementById("searchBox").addEventListener("input", (e) => {
+    searchQuery = e.target.value;
+    currentPage = 1;
+    renderTasks();
+});
+
+document.getElementById("exportBtn").addEventListener("click", () => {
+    const rows = [["Description", "Status", "Priority", "Points", "Due Date"]];
+    tasks.forEach(task => {
+        rows.push([task.description, task.status, task.priority || "", task.storypoints, task.end_date]);
+    });
+    const csv = rows.map(r => r.map(value => `"${value}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "tasks_export.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+});
+
+let currentEditTaskIndex = null;
+function openEditTaskPopup(index) {
+    console.log("Opening popup for task ID:", index); // Debug
+    currentEditTaskIndex = tasks.findIndex(task => task.id === parseInt(index));
+    if (currentEditTaskIndex === -1) {
+        console.error("Task not found for ID:", index);
+        showToast("error", "Error", "Task not found.");
+        return;
+    }
+    const task = tasks[currentEditTaskIndex];
+    const popup = document.getElementById('editTaskPopup');
+    if (!popup) {
+        console.error("Popup element not found");
+        showToast("error", "Error", "Popup element not found.");
+        return;
+    }
+    document.getElementById('editDescription').value = task.description || '';
+    document.getElementById('editDepartment').value = task.department || '';
+    document.getElementById('editArea').value = task.area || '';
+    document.getElementById('editSubarea').value = task.sub_area || '';
+    document.getElementById('editPerson').value = task.person || '';
+    document.getElementById('editStartDate').value = task.start_date || '';
+    document.getElementById('editEndDate').value = task.end_date || '';
+    document.getElementById('editStorypoints').value = task.storypoints || '';
+    document.getElementById('editStatus').value = task.status || '';
+    document.getElementById('editRequestDate').value = task.Request_date || '';
+    document.getElementById('editCompletionDate').value = task.completion_date || '';
+    document.getElementById('editPriority').value = task.priority || '';
+    document.getElementById('editBottlenecks').value = task.bottlenecks || '';
+    document.getElementById('editRemarks').value = task.remarks || '';
+    popup.style.display = 'flex';
+}
+
+function closeEditTaskPopup() {
+    document.getElementById('editTaskPopup').style.display = 'none';
+}
+
+document.getElementById('editTaskForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (currentEditTaskIndex === null) return;
+    const form = this;
+    const submitBtn = form.querySelector('.btn-submit');
+    const originalText = submitBtn.innerText;
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Updating...";
+    const status = document.getElementById('editStatus').value;
+    console.log("Selected status:", status); // Debug
+    let completionDate = document.getElementById('editCompletionDate').value;
+    if (status === 'Completed' && !completionDate) {
+        const today = new Date().toISOString().split('T')[0];
+        completionDate = today;
+        document.getElementById('editCompletionDate').value = today;
+    }
+    const updatedTask = {
+        ...tasks[currentEditTaskIndex],
+        description: document.getElementById('editDescription').value,
+        department: document.getElementById('editDepartment').value,
+        area: document.getElementById('editArea').value,
+        sub_area: document.getElementById('editSubarea').value,
+        person: document.getElementById('editPerson').value,
+        start_date: document.getElementById('editStartDate').value,
+        end_date: document.getElementById('editEndDate').value,
+        storypoints: document.getElementById('editStorypoints').value,
+        status: status,
+        end_date: document.getElementById('editRequestDate').value,
+        completion_date: completionDate,
+        priority: document.getElementById('editPriority').value,
+        bottlenecks: document.getElementById('editBottlenecks').value,
+        remarks: document.getElementById('editRemarks').value
+    };
+    console.log("Updated task:", updatedTask); // Debug
+    fetch(`/api/manager/updateTask/${updatedTask.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedTask)
+    })
+    .then(response => {
+        console.log("API response status:", response.status); // Debug
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(`Failed to update task: ${text}`); });
+        }
+        return response.text();
+    })
+    .then(data => {
+        console.log("API response data:", data); // Debug
+        showToast("success", '<i class="fas fa-check" style="color: green;"></i> Success!', 'Task updated successfully.');
+        closeEditTaskPopup();
+        return fetchTasks();
+    })
+    .catch(error => {
+        console.error("Error updating task:", error);
+        showToast("error", '<i class="fas fa-xmark" style="color: red;"></i> Failed', error.message);
+    })
+    .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalText;
+    });
+});
+
+async function confirmDeleteTask(taskId) {
+    const result = await Swal.fire({
+        title: `Delete Task ID: ${taskId}?`,
+        text: "This action cannot be undone.",
+        icon: 'warning',
+        width: '400px',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    });
+    if (!result.isConfirmed) return;
+    try {
+        const response = await fetch(`/api/manager/delete/${taskId}`, {
+            method: 'DELETE'
+        });
+        const result = await response.text();
+        if (response.ok) {
+            showToast("success", '<i class="fas fa-check" style="color: green;"></i> Success!', 'Task Deleted Successfully.');
+            fetchTasks();
+        } else {
+            showToast("error", '<i class="fas fa-xmark" style="color: red;"></i> Failed', 'Failed To Delete Task.');
+        }
+    } catch (err) {
+        console.error('Delete error:', err);
+        showToast("error", '<i class="fas fa-xmark" style="color: red;"></i> Error', 'An Error Occurred While Deleting The Task');
+    }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    fetchTasks();
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Performance_Dashboard_Ept</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-yH9Yl9a6Q3NwlAvG9UqEQo8P3YqLb7q2bKnxTeM3S8gZ9b98TywP/CUB9WBg2K+OEfDf8y5c7cvcrDFAmj0R4g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      padding: 1rem;
+    }
+    .card {
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 1rem;
+       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      
+    }
+    
+    .custom-header {
+  background: linear-gradient(90deg, #77c1c9 0%, #7ce7508c 100%);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -0.9rem;
+  position: relative;
+  font-size: 0.85rem;
+  color: #fff;
+  width: 84.46666666666667rem; /* same value, just cleaned */
+  margin-left: -1rem;
+  height: 4rem;
+}
+    
+ /*  .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #eae6ff;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}  */
+
+
+    .header h2 {
+      font-weight: bold;
+      font-size: 1.25rem;
+      margin: 0;
+    }
+    .status-labels span {
+      display: inline-block;
+      margin-right: 10px;
+    }
+    .summary-box {
+      background-color: #fff;
+      padding: 1rem;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .equal-height {
+      min-height: 17rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .chart-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    canvas {
+      width: 100% !important;
+      height: auto !important;
+    }
+
+
+	
+	@media (max-width: 767.98px) {
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .row .col-12.col-md-6 {
+    flex: 0 0 48%;
+    max-width: 48%;
+    margin-bottom: 10px;
+  }
+}
+
+    /*  Mobile View */
+	
+	@media (max-width: 768px) {
+  body {
+    padding: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .custom-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 13px 16px;
+        font-size: 0.95rem !important;
+        gap: 8px;
+        width: 106%;
+        margin-top: -6.1px;
+    }
+
+  .custom-header h2 {
+    font-size: 1rem !important;
+  }
+
+  .custom-header img {
+    width: 35px;
+    height: auto;
+    align-self: flex-end;
+  }
+
+  #backBtn {
+    font-size: 1rem !important;
+  }
+
+  iframe {
+    height: 80vh !important;
+    margin-top: 1rem;
+  }
+
+  .row .col-12.col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .summary-box {
+    font-size: 0.9rem;
+    padding: 0.75rem;
+  }
+
+  .equal-height {
+    min-height: unset;
+  }
+}
+	
+  </style>
+</head>
+<body>             
+ <header class="custom-header">
+             
+       <!-- Corrected color property -->
+  <div style="display: flex; align-items: center; gap: 0.4rem;">
+    <!-- Back Button -->
+    <a id="backBtn" style="color: #fff; font-size: 0.9rem; text-decoration: none; cursor: pointer;">
+      <i class="fa-solid fa-arrow-left" style="font-size: 0.85rem;"></i>
+    </a>
+
+    <!-- Title -->
+    <h2 class="mb-0 fs-6 fw-bold" style="margin: 0; font-size: 0.95rem;">Performance Dashboard</h2>
+  </div>
+    <img src="/images/logo.png" alt="User Icon" style="width: 42px; height: 30px;">
+
+</header>
+
+ <div style="width: 100%; height: 100vh;     margin-top: 2rem;">
+  <iframe 
+  title="workflow"
+  width="100%" 
+  height="100%"   
+  src="https://app.powerbi.com/view?r=eyJrIjoiMmJjZWM2MmMtYjljMC00N2VlLTljOTktMjEyMjk1MTYxZGJmIiwidCI6ImM5MzA2NWY5LTg1ODctNGJmYy05YjQzLWMyYWZhMGRjNTY1MCJ9">
+</iframe> 
+  
+</div>
+
+  <script>
+ 
+   document.getElementById("backBtn").addEventListener("click", function () {
+	  const role = localStorage.getItem("EmpRole"); // Use "EmpRole", not "userRole"
+	  console.log("Role:", role);
+
+	  if (role === "manager") {
+	    window.location.href = "/ept/home/manager";
+	  } else if (role === "employee") {
+	    window.location.href = "/ept/home/employee";
+	  } else {
+	    window.location.href = "/ept/login"; // fallback
+	  }
+	}); 
+
+
+  </script>
+</body>
+</html>
