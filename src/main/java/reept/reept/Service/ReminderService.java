@@ -74,45 +74,97 @@ public class ReminderService {
 
         //Reminder before one day
         
-        if (!dueTomorrow.isEmpty()) {
+        // if (!dueTomorrow.isEmpty()) {
+        //     StringBuilder body = new StringBuilder();
+        //     body.append("Dear ").append(employee.getName()).append(",\n\n")
+        //         .append("The following task(s) are due tomorrow:\n\n");
+
+        //     for (Task task : dueTomorrow) {
+        //         body.append("• Task ID      : ").append(task.getId()).append("\n")
+        //             .append("• Description  : ").append(task.getDescription()).append("\n")
+        //             .append("• Department   : ").append(task.getDepartment()).append("\n")
+        //             .append("• Priority     : ").append(task.getPriority()).append("\n")
+        //             .append("• Start Date   : ").append(task.getStart_date()).append("\n")
+        //             .append("• End Date     : ").append(task.getEnd_date()).append("\n")
+        //             .append("• Status       : ").append(task.getStatus()).append("\n\n");
+        //     }
+
+        //     body.append("Please ensure these are completed on time.\n\nBest regards,\nTask Management System");
+        //     emailService.sendEmail(employeeEmail, "🔔 Reminder: Task(s) Due Tomorrow", body.toString());
+        // }
+
+         if (!dueTomorrow.isEmpty()) {
             StringBuilder body = new StringBuilder();
-            body.append("Dear ").append(employee.getName()).append(",\n\n")
-                .append("The following task(s) are due tomorrow:\n\n");
+
+            body.append("<p>Dear ").append(employee.getName()).append(",</p>");
+            body.append("<p>The following task(s) are due tomorrow:</p>");
 
             for (Task task : dueTomorrow) {
-                body.append("• Task ID      : ").append(task.getId()).append("\n")
-                    .append("• Description  : ").append(task.getDescription()).append("\n")
-                    .append("• Department   : ").append(task.getDepartment()).append("\n")
-                    .append("• Priority     : ").append(task.getPriority()).append("\n")
-                    .append("• Start Date   : ").append(task.getStart_date()).append("\n")
-                    .append("• End Date     : ").append(task.getEnd_date()).append("\n")
-                    .append("• Status       : ").append(task.getStatus()).append("\n\n");
+                body.append("<ul>");
+                body.append("<li><strong>Task ID</strong>: ").append(task.getId()).append("</li>");
+                body.append("<li><strong>Description</strong>: ").append(task.getDescription()).append("</li>");
+                body.append("<li><strong>Department</strong>: ").append(task.getDepartment()).append("</li>");
+                body.append("<li><strong>Priority</strong>: ").append(task.getPriority()).append("</li>");
+                body.append("<li><strong>Start Date</strong>: ").append(task.getStart_date()).append("</li>");
+                body.append("<li><strong>End Date</strong>: ").append(task.getEnd_date()).append("</li>");
+                body.append("<li><strong>Status</strong>: ").append(task.getStatus()).append("</li>");
+                body.append("</ul>");
             }
 
-            body.append("Please ensure these are completed on time.\n\nBest regards,\nTask Management System");
+            body.append("<p>Please ensure these are completed on time.</p>");
+            body.append("<p>Best regards,<br>Task Management System</p>");
+
+          
             emailService.sendEmail(employeeEmail, "🔔 Reminder: Task(s) Due Tomorrow", body.toString());
         }
 
+
         // Alert after crossing End date
         
-        if (!overdueTasks.isEmpty()) {
+        // if (!overdueTasks.isEmpty()) {
+        //     StringBuilder body = new StringBuilder();
+        //     body.append("Dear ").append(employee.getName()).append(",\n\n")
+        //         .append("The following task(s) are now overdue:\n\n");
+
+        //     for (Task task : overdueTasks) {
+        //         body.append("• Task ID      : ").append(task.getId()).append("\n")
+        //             .append("• Description  : ").append(task.getDescription()).append("\n")
+        //             .append("• Department   : ").append(task.getDepartment()).append("\n")
+        //             .append("• Priority     : ").append(task.getPriority()).append("\n")
+        //             .append("• Start Date   : ").append(task.getStart_date()).append("\n")
+        //             .append("• End Date     : ").append(task.getEnd_date()).append("\n")
+        //             .append("• Status       : ").append(task.getStatus()).append("\n\n");
+        //     }
+
+        //     body.append("Please take immediate action.\n\nBest regards,\nTask Management System");
+        //     emailService.sendEmail(employeeEmail, "⚠️ Overdue Task Alert", body.toString());
+        // }
+
+         if (!overdueTasks.isEmpty()) {
             StringBuilder body = new StringBuilder();
-            body.append("Dear ").append(employee.getName()).append(",\n\n")
-                .append("The following task(s) are now overdue:\n\n");
+
+            body.append("<p>Dear ").append(employee.getName()).append(",</p>");
+            body.append("<p>The following task(s) are now <strong>overdue</strong>:</p>");
 
             for (Task task : overdueTasks) {
-                body.append("• Task ID      : ").append(task.getId()).append("\n")
-                    .append("• Description  : ").append(task.getDescription()).append("\n")
-                    .append("• Department   : ").append(task.getDepartment()).append("\n")
-                    .append("• Priority     : ").append(task.getPriority()).append("\n")
-                    .append("• Start Date   : ").append(task.getStart_date()).append("\n")
-                    .append("• End Date     : ").append(task.getEnd_date()).append("\n")
-                    .append("• Status       : ").append(task.getStatus()).append("\n\n");
+                body.append("<ul>");
+                body.append("<li><strong>Task ID</strong>: ").append(task.getId()).append("</li>");
+                body.append("<li><strong>Description</strong>: ").append(task.getDescription()).append("</li>");
+                body.append("<li><strong>Department</strong>: ").append(task.getDepartment()).append("</li>");
+                body.append("<li><strong>Priority</strong>: ").append(task.getPriority()).append("</li>");
+                body.append("<li><strong>Start Date</strong>: ").append(task.getStart_date()).append("</li>");
+                body.append("<li><strong>End Date</strong>: ").append(task.getEnd_date()).append("</li>");
+                body.append("<li><strong>Status</strong>: ").append(task.getStatus()).append("</li>");
+                body.append("</ul>");
             }
 
-            body.append("Please take immediate action.\n\nBest regards,\nTask Management System");
+            body.append("<p>Please take <strong>immediate action</strong>.</p>");
+            body.append("<p>Best regards,<br>Task Management System</p>");
+
+           
             emailService.sendEmail(employeeEmail, "⚠️ Overdue Task Alert", body.toString());
         }
+
     }
 }
 
