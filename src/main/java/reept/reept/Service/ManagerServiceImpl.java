@@ -36,17 +36,30 @@ public class ManagerServiceImpl implements ManagerService {
 
 	        	 String subject = "New Task Assigned to You";
 
-	        	 String body = "Dear " + task.getPerson() + ",\n\n"
-	        	             + "A new task has been assigned to you. Please find the task details below:\n\n"
-	        	             + "• Description : " + task.getDescription() + "\n"
-	        	             + "• Priority    : " + task.getPriority() + "\n"
-	        	             + "• Department  : " + task.getDepartment() + "\n"
-	        	             + "• Start Date  : " + task.getStart_date() + "\n"
-	        	             + "• End Date    : " + task.getEnd_date() + "\n\n"
-	        	             + "Please log in to your dashboard to view more details.\n\n"
-	        	             + "Best regards,\n"
-	        	             + "Task Management System.\n\n"
-	        	             + "Note: This is a system-generated message. Please do not reply.";
+	        	 // String body = "Dear " + task.getPerson() + ",\n\n"
+	        	 //             + "A new task has been assigned to you. Please find the task details below:\n\n"
+	        	 //             + "• Description : " + task.getDescription() + "\n"
+	        	 //             + "• Priority    : " + task.getPriority() + "\n"
+	        	 //             + "• Department  : " + task.getDepartment() + "\n"
+	        	 //             + "• Start Date  : " + task.getStart_date() + "\n"
+	        	 //             + "• End Date    : " + task.getEnd_date() + "\n\n"
+	        	 //             + "Please log in to your dashboard to view more details.\n\n"
+	        	 //             + "Best regards,\n"
+	        	 //             + "Task Management System.\n\n"
+	        	 //             + "Note: This is a system-generated message. Please do not reply.";
+
+			 String body = "<p>Dear <span style='color:blue; font-weight: bold;'>" + task.getPerson() + "</span>,</p>"
+	                     + "<p>A new task has been assigned to you. Please review the details below:</p>"
+	                     + "<ul>"
+	                     + "<li><strong>Task Name</strong>: " + task.getDescription() + "</li>"
+	                     + "<li><strong>Department</strong>: " + task.getDepartment() + "</li>"
+	                     + "<li><strong>Priority</strong>: " + task.getPriority() + "</li>"
+	                     + "<li><strong>Start Date</strong>: " + task.getStart_date() + "</li>"
+	                     + "<li><strong>End Date</strong>: " + task.getEnd_date() + "</li>"
+	                     + "</ul>"
+	                     + "<p>Please login to your dashboard to review and start working on the task.</p>"
+	                     + "<p>Best regards,<br>Task Management System.</p>"
+	                     + "<p><i>Note: This is a system-generated message. Please do not reply.</i></p>";
 
 
 	             // Send email to employee
@@ -103,13 +116,28 @@ public class ManagerServiceImpl implements ManagerService {
 	 	    if (isUpdated) {
 	 	        String subject = "Task Updated";
 	 	        
-	 	       String body = "Dear " + updatedTask.getPerson() + ",\n\n"
-	 	              + "Your assigned task has been updated by the manager. Please find the updated details below:\n\n"
-	 	              + "• Description: " + updatedTask.getDescription() + "\n"
-	 	              + "• Status     : " + updatedTask.getStatus() + "\n\n"
-	 	              + "Best regards,\n"
-	 	              + "Task Management System.\n\n"
-	 	              + "Note: This is a system-generated message. Please do not reply.";
+	 	       // String body = "Dear " + updatedTask.getPerson() + ",\n\n"
+	 	       //        + "Your assigned task has been updated by the manager. Please find the updated details below:\n\n"
+	 	       //        + "• Description: " + updatedTask.getDescription() + "\n"
+	 	       //        + "• Status     : " + updatedTask.getStatus() + "\n\n"
+	 	       //        + "Best regards,\n"
+	 	       //        + "Task Management System.\n\n"
+	 	       //        + "Note: This is a system-generated message. Please do not reply.";
+
+			    String body = "<p>Dear <span style='color:blue; font-weight: bold;'>" + updatedTask.getPerson() + "</span>,</p>"
+	                    + "<p>Your assigned task has been updated by the manager. Please find the updated details below:</p>"
+	                    + "<ul>"
+	                    + "<li><strong>Task ID</strong>: " + updatedTask.getId() + "</li>"
+	                    + "<li><strong>Task Name</strong>: " + updatedTask.getDescription() + "</li>"
+	                    + "<li><strong>Department</strong>: " + updatedTask.getDepartment() + "</li>"
+	                    + "<li><strong>Priority</strong>: " + updatedTask.getPriority() + "</li>"
+	                    + "<li><strong>Start Date</strong>: " + updatedTask.getStart_date() + "</li>"
+	                    + "<li><strong>End Date</strong>: " + updatedTask.getEnd_date() + "</li>"
+	                    + "<li><strong>Status</strong>: " + updatedTask.getStatus().toUpperCase() + "</li>"
+	                    + "</ul>"
+	                    + "<p>Please login to your dashboard to view the updated task.</p>"
+	                    + "<p>Best regards,<br>Task Management System.</p>"
+	                    + "<p><i>Note: This is a system-generated message. Please do not reply.</i></p>";
 
 
 	 	        // Notify employee of task update
