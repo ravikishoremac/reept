@@ -950,10 +950,16 @@ function openEditTaskPopup(index) {
     document.getElementById('editStorypoints').value = task.storypoints || '';
     document.getElementById('editStatus').value = task.status || '';
     document.getElementById('editRequestDate').value = task.Request_date || '';
-    document.getElementById('editCompletionDate').value = task.completion_date || '';
+  //  document.getElementById('editCompletionDate').value = task.completion_date || '';
     document.getElementById('editPriority').value = task.priority || '';
     document.getElementById('editBottlenecks').value = task.bottlenecks || '';
     document.getElementById('editRemarks').value = task.remarks || '';
+
+   // Auto-fill Completion Date with Request Date if empty
+    const requestDate = task.Request_date || '';
+    const completionDate = task.completion_date || '';
+    document.getElementById('editCompletionDate').value = completionDate || requestDate;
+  
     popup.style.display = 'flex';
 }
 
