@@ -62,7 +62,7 @@ public class ReminderService {
             LocalDate endDate = task.getEnd_date();
             String status = task.getStatus().trim();
 
-            if (!status.equalsIgnoreCase("Completed") && !status.equalsIgnoreCase("Completion Request")) {
+            if (!status.equalsIgnoreCase("Completed") && !status.equalsIgnoreCase("Completion Request") && !status.equalsIgnoreCase("Blocked")) {
                 if (endDate.equals(today.plusDays(1))) {
                     dueTomorrow.add(task);
                 } else if (endDate.isBefore(today)) {
