@@ -13,9 +13,8 @@ public class TaskEmailScheduler {
     @Autowired
     private ReminderService reminderService;
 
-    // Runs every day at 9 AM
+    // Runs every day at 10 AM
     @Scheduled(cron = "0 0 10 * * ?", zone = "Asia/Kolkata")
-    //@Scheduled(cron = "0 47 13 * * ?", zone = "Asia/Kolkata")
     public void runDailyTaskReminder() {
         reminderService.sendDailyTaskEmailsToAllEmployees();
     }
